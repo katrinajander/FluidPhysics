@@ -32,6 +32,43 @@ module top_level
   assign rgb0 = 0;
   assign rgb1 = 0;
 
+
+  ///////////////////////// BRAM Instantiation for Lattice
+
+  localparam BRAM_DEPTH = 36864; // Comes from (1280/5)*(720/5) = 256*144 = 36864
+  localparam BRAM_WIDTH = 8; // Lattice densities are 8 bits
+
+  generate
+    genvar i;
+    for (i=0; i<9; i=i+1)begin
+      xilinx_true_dual_port_read_first_1_clock_ram #(
+        .RAM_WIDTH(BRAM_WIDTH),
+        .RAM_DEPTH(BRAM_DEPTH),
+        .RAM_PERFORMANCE("HIGH_PERFORMANCE")) lattice_ram (
+        .clka(clk_100mhz),     // TODO is this the right clock?
+        //port a
+        .addra(),   // Port A address bus,
+        .dina(),     // Port A RAM input data
+        .wea(),       // Port A write enable
+        // port b
+        .addrb(),   // Port B address bus,
+        .doutb(),    // Port B RAM output data,
+        .douta(),   // Port A RAM output data, width determined from RAM_WIDTH
+        .dinb(0),     // Port B RAM input data, width determined from RAM_WIDTH
+        .web(1'b0),       // Port B write enable
+        .ena(1'b1),       // Port A RAM Enable
+        .enb(1'b1),       // Port B RAM Enable,
+        .rsta(rst_in),     // Port A output reset
+        .rstb(rst_in),     // Port B output reset
+        .regcea(1'b1), // Port A output register enable
+        .regceb(1'b1) // Port B output register enable
+      );
+    end
+  endgenerate
+
+  ///////////////////////// LBM
+  // instantiate module and wire correct addresses to BRAM
+
   // Clock and Reset Signals
   logic          sys_rst_camera;
   logic          sys_rst_pixel;
@@ -114,8 +151,6 @@ module top_level
      .pixel_hcount_out(camera_hcount),
      .pixel_vcount_out(camera_vcount),
      .pixel_data_out(camera_pixel));
-
-  //----------------BEGIN NEW STUFF FOR LAB 07------------------
 
   //clock domain cross (from clk_camera to clk_pixel)
   //switching from camera clock domain to pixel clock domain early
