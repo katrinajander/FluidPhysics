@@ -1,0 +1,6 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="1733492730" />
+    <testcase name="test_a" classname="test_divider" file="C:\Users\katri\Documents\6205\FluidPhysics\sim\test_divider.py" lineno="20" time="0.10458517074584961" sim_time_ns="3110.001" ratio_time="29736.538916760514" />
+  </testsuite>
+</testsuites>

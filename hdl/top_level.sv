@@ -35,7 +35,7 @@ module top_level
 
   ///////////////////////// BRAM Instantiation for Lattice
 
-  localparam BRAM_DEPTH = 36864; // Comes from (1280/5)*(720/5) = 256*144 = 36864
+  localparam BRAM_DEPTH = 36864; // Comes from (1280/5)*(720/5) = 205*154 = 36864
   localparam BRAM_WIDTH = 8; // Lattice densities are 8 bits
 
   generate
