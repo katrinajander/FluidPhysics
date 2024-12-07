@@ -1,4 +1,3 @@
-`timescale 1ns / 1ps
 `default_nettype none
 
 module divider #(parameter WIDTH = 32) (input wire clk_in,
@@ -18,10 +17,6 @@ module divider #(parameter WIDTH = 32) (input wire clk_in,
   // logic data_valid [31:0]; //why did it start like this??
   logic [31:0] data_valid;
 
-  assign data_valid_out = data_valid[31];
-  assign quotient_out = (sign_out) ? -dividend[31] : dividend[31]; // add a check for sign here
-  assign remainder_out = p[31];
-
   //signed logic
   //signs of dividend and divisor, and sign_diff = 1 if they are different
   // dividend_sign=1 and divisor_sign=1 when negative
@@ -30,6 +25,11 @@ module divider #(parameter WIDTH = 32) (input wire clk_in,
   logic [31:0] sign;
   logic [31:0] dividend_in_unsigned;
   logic [31:0] divisor_in_unsigned;
+
+  assign data_valid_out = data_valid[31];
+  assign quotient_out = (sign_out) ? -dividend[31] : dividend[31]; // add a check for sign here
+  assign remainder_out = p[31];
+
 
   always @(*) begin
     dividend_sign = dividend_in[31]; //(dividend_sign) ? -dividend_in : dividend_in;
