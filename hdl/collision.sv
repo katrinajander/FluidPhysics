@@ -2,7 +2,6 @@
 
 module collision (input wire clk_in,
                 input wire rst_in,
-                input wire write_addr_in,
                 input wire [8:0][7:0] data_in, //9 8-bit numbers from BRAM
                 input wire data_valid_in, //real data valid to collide
                 output logic [8:0][7:0] data_out, //results to write back to BRAM
@@ -93,6 +92,7 @@ module collision (input wire clk_in,
     localparam NUM_STAGES = 19;
     localparam NUM_RHO_STAGES = 1;
     logic [NUM_STAGES:0][8:0][7:0] store_data_in;
+    logic [NUM_STAGES:0] valid_out_pipeline;
     logic [NUM_RHO_STAGES:0][11:0] rho_9_pipeline;
     logic [NUM_RHO_STAGES:0][11:0] rho_36_pipeline;
 
@@ -112,6 +112,7 @@ module collision (input wire clk_in,
         sum_x_extended = { 10'b0, sum_x, 8'b0};
         sum_y_extended = {10'b0, sum_y, 8'b0};
         store_data_in[0] = data_in;
+        valid_out_pipeline[0] = data_valid_in;
         if (divide_rho_valid_out) begin
             rho_9_pipeline[0] = one_9th_rho;
             rho_36_pipeline[0] = one_36th_rho;
@@ -122,6 +123,7 @@ module collision (input wire clk_in,
         //pipeline the data_in stuff so that it can be used in the final calculation
         for (int i=1; i<NUM_STAGES+1; i=i+1)begin
             store_data_in[i] <= store_data_in[i-1];
+            valid_out_pipeline[i] <= valid_out_pipeline[i-1];
         end
         
         for (int j=1; j<NUM_RHO_STAGES+1; j=j+1) begin
@@ -194,6 +196,7 @@ module collision (input wire clk_in,
         data_out[6] <= rho_36_pipeline[NUM_RHO_STAGES] * (1 - ux_times_3 - uy_times_3 + ((9*(ux_squared + two_ux_uy)) >> 2) - u_squared_times_15) - store_data_in[NUM_STAGES][6]; //southwest
         data_out[7] <= rho_9_pipeline[NUM_RHO_STAGES] * (1 - ux_times_3 + ((9*ux_squared) >> 2) - u_squared_times_15) - store_data_in[NUM_STAGES][7]; //west
         data_out[8] <= rho_36_pipeline[NUM_RHO_STAGES] * (1 - ux_times_3 + uy_times_3 + ((9*(ux_squared + two_ux_uy)) >> 2) - u_squared_times_15) - store_data_in[NUM_STAGES][8]; //northwest
+        done_colliding_out <= valid_out_pipeline[NUM_STAGES];
     end
 
 endmodule
