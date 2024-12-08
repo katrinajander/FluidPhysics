@@ -25,7 +25,13 @@ async def test_a(dut):
     dut.rst_in.value = 1
     await ClockCycles(dut.clk_in, 5)
     dut.rst_in.value = 0
-    dut.data_in = 99999999000000 # how do i pack the array :/
+    dut.data_in = LogicArray('000000010000000100000001000000010000000100000001000000010000000100000001')
+    dut.data_valid_in = 1
+    await ClockCycles(dut.clk_in, 1)
+    dut.data_in = LogicArray('000001110000000100000011000001110000001100000111000000110000000100000111') #5 in for 09
+    await ClockCycles(dut.clk_in, 1)
+    dut.data_valid_in = 0
+    # 00000001 00000001 00000001 00000001 00000001 00000001 00000001 00000001 00000001 (one in each direction)
     # await send_new_divide(dut, 14, 3)
     # dut.data_valid_in = 1
 

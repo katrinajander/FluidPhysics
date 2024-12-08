@@ -26,7 +26,7 @@ async def test_a(dut):
     await ClockCycles(dut.clk_in, 5)
     dut.rst_in.value = 0
     dut.data_valid_in = 1
-    await send_new_divide(dut, LogicArray('00000000000000000000000001100111'), LogicArray('00000000000000000000000000001100'))
+    await send_new_divide(dut, LogicArray('00000000 00000000 00000000 01100111'), LogicArray('00000000000000000000000000001100'))
     dut.data_valid_in = 1
     await send_new_divide(dut, -14, 3)
     dut.data_valid_in = 1

@@ -4,6 +4,7 @@ module collision (input wire clk_in,
                 input wire rst_in,
                 input wire write_addr_in,
                 input wire [8:0][7:0] data_in, //9 8-bit numbers from BRAM
+                input wire data_valid_in, //real data valid to collide
                 output logic [8:0][7:0] data_out, //results to write back to BRAM
                 output logic done_colliding_out);
 
@@ -14,7 +15,7 @@ module collision (input wire clk_in,
                 .data_valid_in(valid_divide),
                 .quotient_out(ux_extended),
                 .remainder_out(),
-                .data_valid_out(),
+                .data_valid_out(divide_x_valid_out),
                 .error_out(),
                 .busy_out());
 
@@ -25,7 +26,7 @@ module collision (input wire clk_in,
                 .data_valid_in(valid_divide),
                 .quotient_out(uy_extended),
                 .remainder_out(),
-                .data_valid_out(),
+                .data_valid_out(divide_y_valid_out),
                 .error_out(),
                 .busy_out());
 
@@ -36,7 +37,7 @@ module collision (input wire clk_in,
                 .data_valid_in(valid_divide),
                 .quotient_out(one_36th_rho_extended),
                 .remainder_out(),
-                .data_valid_out(),
+                .data_valid_out(divide_rho_valid_out),
                 .error_out(),
                 .busy_out());
     
@@ -80,24 +81,78 @@ module collision (input wire clk_in,
     logic [44:0] u_squared_times_15;
 
     logic [7:0] data_out_zero;
+    logic [11:0] data_out_rho;
+    logic [11:0] data_out_from_in;
 
+    // for testing
     logic valid_divide;
+    logic divide_x_valid_out;
+    logic divide_y_valid_out;
+    logic divide_rho_valid_out;
+
+    localparam NUM_STAGES = 19;
+    localparam NUM_RHO_STAGES = 1;
+    logic [NUM_STAGES:0][8:0][7:0] store_data_in;
+    logic [NUM_RHO_STAGES:0][11:0] rho_9_pipeline;
+    logic [NUM_RHO_STAGES:0][11:0] rho_36_pipeline;
+
+    // delete these
+    logic [7:0] test_zero;
+    logic [7:0] test_one;
+    logic [7:0] test_two;
+    logic [7:0] test_three;
+    logic [7:0] test_four;
+    logic [7:0] test_five;
+    logic [7:0] test_six;
+    logic [7:0] test_seven;
+    logic [7:0] test_eight;
 
     always_comb begin
         rho_extended = {18'b0, rho};
         sum_x_extended = { 10'b0, sum_x, 8'b0};
         sum_y_extended = {10'b0, sum_y, 8'b0};
+        store_data_in[0] = data_in;
+        if (divide_rho_valid_out) begin
+            rho_9_pipeline[0] = one_9th_rho;
+            rho_36_pipeline[0] = one_36th_rho;
+        end
     end
 
     always_ff @(posedge clk_in) begin
+        //pipeline the data_in stuff so that it can be used in the final calculation
+        for (int i=1; i<NUM_STAGES+1; i=i+1)begin
+            store_data_in[i] <= store_data_in[i-1];
+        end
+        
+        for (int j=1; j<NUM_RHO_STAGES+1; j=j+1) begin
+            rho_9_pipeline[j] <= rho_9_pipeline[j-1];
+            rho_36_pipeline[j] <= rho_36_pipeline[j-1];
+        end
+
         //Stage 1 (1 clock cycle)
         // rho
         rho <= data_in[0] + data_in[1] + data_in[2] + data_in[3] + data_in[4] + data_in[5] + data_in[6] + data_in[7] + data_in[8];
+
+        // delete these
+        test_zero <= data_in[0];
+        test_one <= data_in[1];
+        test_two <= data_in[2];
+        test_three <= data_in[3];
+        test_four <= data_in[4];
+        test_five <= data_in[5];
+        test_six <= data_in[6];
+        test_seven <= data_in[7];
+        test_eight <= data_in[8];
+
         // velocity vectors
         sum_x <= data_in[2] + data_in[3] + data_in[4] - data_in[6] - data_in[7] - data_in[8];
         sum_y <= data_in[8] + data_in[1] + data_in[2] - data_in[4] - data_in[5] - data_in[6];
         // valid signal for dividing to get ux, uy, rho/9, rho/36
-        valid_divide <= 1;
+        if (data_valid_in) begin
+            valid_divide <= 1;
+        end else begin
+            valid_divide <= 0;
+        end
 
         //Stage 2 (16 clock cycles for the divider)
         // ux <= sum_x / rho
@@ -118,27 +173,27 @@ module collision (input wire clk_in,
         ux_squared <= ux * ux;
         uy_squared <= uy * uy;
         two_ux_uy <= 2 * ux * uy;
+        //fixed point 16
+        u_squared <= ux * ux + uy * uy;
+        u_squared_times_15 <= (3 * (ux * ux + uy * uy)) >> 1;
 
         //Stage 4 (1 clock cycle)
-        //fixed point 16
-        u_squared <= ux_squared + uy_squared;
-
-        //Stage 5 (1 clock cycle)
-        u_squared_times_15 <= (3 * u_squared) >> 1; //maybe just put this below to save a clock cycle?
-
         // updating data_out
         //should clip negative numbers to 0?
         //rhos should be positive?
-        data_out[0] <= (4 * one_9th_rho) * (1 - u_squared_times_15) - data_in[0]; //center
-        // data_out_zero <= (4 * one_9th_rho) * (1 - u_squared_times_15) - data_in[0];
-        data_out[1] <= one_9th_rho * (1 + uy_times_3 + ((9*uy_squared) >> 2) - u_squared_times_15) - data_in[1]; //north
-        data_out[2] <= one_36th_rho * (1 + ux_times_3 + uy_times_3 + ((9*(ux_squared + two_ux_uy)) >> 2) - u_squared_times_15) - data_in[2]; //northeast
-        data_out[3] <= one_9th_rho * (1 + uy_times_3 + ((9*ux_squared) >> 2) - u_squared_times_15) - data_in[3]; //east
-        data_out[4] <= one_36th_rho * (1 + ux_times_3 - uy_times_3 + ((9*(ux_squared + two_ux_uy)) >> 2) - u_squared_times_15) - data_in[4]; //southeast
-        data_out[5] <= one_9th_rho * (1 - uy_times_3 + ((9*uy_squared) >> 2) - u_squared_times_15) - data_in[5]; //south
-        data_out[6] <= one_36th_rho * (1 - ux_times_3 - uy_times_3 + ((9*(ux_squared + two_ux_uy)) >> 2) - u_squared_times_15) - data_in[6]; //southwest
-        data_out[7] <= one_9th_rho * (1 - ux_times_3 + ((9*ux_squared) >> 2) - u_squared_times_15) - data_in[7]; //west
-        data_out[8] <= one_36th_rho * (1 - ux_times_3 + uy_times_3 + ((9*(ux_squared + two_ux_uy)) >> 2) - u_squared_times_15) - data_in[8]; //northwest
+        data_out[0] <= (4 * rho_9_pipeline[NUM_RHO_STAGES]) * (1 - u_squared_times_15) - store_data_in[NUM_STAGES][0]; //center
+        data_out_zero <= (4 * rho_9_pipeline[NUM_RHO_STAGES]) * (1 - u_squared_times_15) - store_data_in[NUM_STAGES][0];
+        data_out_rho <= rho_36_pipeline[NUM_RHO_STAGES];
+        data_out_from_in <= store_data_in[NUM_STAGES][0];
+        // data_out_zero <= rho_9_pipeline[NUM_RHO_STAGES];
+        data_out[1] <= rho_9_pipeline[NUM_RHO_STAGES] * (1 + uy_times_3 + ((9*uy_squared) >> 2) - u_squared_times_15) - store_data_in[NUM_STAGES][1]; //north
+        data_out[2] <= rho_36_pipeline[NUM_RHO_STAGES] * (1 + ux_times_3 + uy_times_3 + ((9*(ux_squared + two_ux_uy)) >> 2) - u_squared_times_15) - store_data_in[NUM_STAGES][2]; //northeast
+        data_out[3] <= rho_9_pipeline[NUM_RHO_STAGES] * (1 + uy_times_3 + ((9*ux_squared) >> 2) - u_squared_times_15) - store_data_in[NUM_STAGES][3]; //east
+        data_out[4] <= rho_36_pipeline[NUM_RHO_STAGES] * (1 + ux_times_3 - uy_times_3 + ((9*(ux_squared + two_ux_uy)) >> 2) - u_squared_times_15) - store_data_in[NUM_STAGES][4]; //southeast
+        data_out[5] <= rho_9_pipeline[NUM_RHO_STAGES] * (1 - uy_times_3 + ((9*uy_squared) >> 2) - u_squared_times_15) - store_data_in[NUM_STAGES][5]; //south
+        data_out[6] <= rho_36_pipeline[NUM_RHO_STAGES] * (1 - ux_times_3 - uy_times_3 + ((9*(ux_squared + two_ux_uy)) >> 2) - u_squared_times_15) - store_data_in[NUM_STAGES][6]; //southwest
+        data_out[7] <= rho_9_pipeline[NUM_RHO_STAGES] * (1 - ux_times_3 + ((9*ux_squared) >> 2) - u_squared_times_15) - store_data_in[NUM_STAGES][7]; //west
+        data_out[8] <= rho_36_pipeline[NUM_RHO_STAGES] * (1 - ux_times_3 + uy_times_3 + ((9*(ux_squared + two_ux_uy)) >> 2) - u_squared_times_15) - store_data_in[NUM_STAGES][8]; //northwest
     end
 
 endmodule
