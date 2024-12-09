@@ -6,7 +6,7 @@ module top_level
     input wire          clk_100mhz,
     output logic [15:0] led,
     input wire [15:0]   sw,
-    input wire [3:0]    btn
+    input wire [3:0]    btn,
     output logic [2:0] rgb0, //rgb led
     output logic [2:0] rgb1, //rgb led
     output logic [2:0] hdmi_tx_p, //hdmi output signals (positives) (blue, green, red)
@@ -29,11 +29,12 @@ module top_level
   logic [BRAM_SIZE-1:0] addrb;
   logic [8:0][7:0] lbm_bram_data_read;
   logic [8:0][7:0] lbm_bram_data_write;
+  logic sys_rst;
 
   //HDMI/video registers
   logic [8:0][7:0] hdmi_read_data;
   always_comb begin
-    addrb = 0; //TODO this will be reassigned when i write the other module
+    sys_rst = btn[0];
   end
 
   //              0        1      2         3       4         5       6        7       8
@@ -43,37 +44,42 @@ module top_level
   generate
     genvar i;
     for (i=0; i<9; i=i+1)begin
-       blk_mem_gen_0 lattice_ram (
+      //this needs to be named blah. don't change it
+       blah lattice_ram (
         .addra(addra), // LBM side addressing
-        .clka(clk_100mhz),
+        .clka(clk_buf),
         .dina(lbm_bram_data_write[i]), // from LBM module
-        .douta(bram_data_read[i]), // from LBM module
+        .douta(lbm_bram_data_read[i]), // from LBM module
         .ena(1'b1),
-        .wea(1'b1),
+        .wea(1'b0),
         .addrb(addrb),
         .clkb(clk_pixel), //clock for reading for HDMI
         .dinb(), //no data in from HDMI (empty)
-        .doutb(hdmi_read_data), //data to get passed along (through calculation) to HDMI
+        .doutb(hdmi_read_data[i]), //data to get passed along (through calculation) to HDMI
         .enb(1'b1),
         .web(1'b0) //no writing on this side
       );
     end
   endgenerate
 
-  lbm lbm_state_machine (.clk_in(clk_100mhz),
-                .rst_in(btn[0]),
+  lbm lbm_state_machine (.clk_in(clk_buf),
+                .rst_in(sys_rst),
                 .bram_data_in(lbm_bram_data_read),
                 .addr_out(addra),
                 .bram_data_out(lbm_bram_data_write));
  
   logic clk_pixel, clk_5x; //clock lines
   logic locked; //locked signal (we'll leave unused but still hook it up)
- 
+
+  logic clk_buf;
+  
+  BUFG clk_buffer (.I(clk_100mhz), .O(clk_buf));
+
   //clock manager...creates 74.25 Hz and 5 times 74.25 MHz for pixel and TMDS
   hdmi_clk_wiz_720p mhdmicw (
       .reset(0),
       .locked(locked),
-      .clk_ref(clk_100mhz),
+      .clk_ref(clk_buf),
       .clk_pixel(clk_pixel),
       .clk_tmds(clk_5x));
  
@@ -88,7 +94,7 @@ module top_level
   //default instantiation so making signals for 720p
   video_sig_gen mvg(
       .pixel_clk_in(clk_pixel),
-      .rst_in(rst_in),
+      .rst_in(sys_rst),
       .hcount_out(hcount),
       .vcount_out(vcount),
       .vs_out(vert_sync),
@@ -105,8 +111,8 @@ module top_level
   //takes in clk_pixel, rst_in, hcount, vcount
   //returns rgb value at that hcount and vcount, addrb
   pixel_calculator pixels(.pixel_clk_in(clk_pixel),
-                          .rst_in(rst_in),
-                          .bram_data_in(hdmi_read_data),
+                          .rst_in(sys_rst),
+                          .data_in(hdmi_read_data),
                           .hcount_in(hcount),
                           .vcount_in(vcount),
                           .addr_out(addrb),

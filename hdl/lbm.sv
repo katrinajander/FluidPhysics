@@ -3,7 +3,7 @@
 module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
                                             input wire rst_in,
                                             input wire [8:0][7:0] bram_data_in, //data read from bram
-                                            output [BRAM_SIZE-1:0] addr_out,
+                                            output logic [BRAM_SIZE-1:0] addr_out,
                                             output logic [8:0][7:0] bram_data_out); //data to write to bram
 
     // Major/minor FSM for Lattice Boltzmann Method
@@ -29,7 +29,7 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
 
     always_ff @(posedge clk_in)begin
         if (rst_in)begin
-            counter <= 0;
+            addr_counter <= 0;
             //probably more things too TODO
         end else begin
             case (state)
@@ -57,12 +57,18 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
                         state <= STREAMING;
                         addr_counter <= 0;
                     end else begin
+                        //ok (temporary?) plan just feed it one value at a time and wait NUM_STAGES cycles (wait for valid_collide)
+                        //then move on to next value
                         //enable signal to collision module after 2 cycles for the delay?
-                        collision_in_data <= bram_data_in;
-                        bram_data_out <= collision_out_data;
+                        // collision_in_data <= bram_data_in;
+                        // bram_data_out <= collision_out_data;
+                        // if (valid_collide) begin
+                        //     //waits NUM_STAGES cycles before first incrementing the counter
+                        //     //after that it should increment every cycle
+                        //     addr_counter <= addr_counter + 1;
+                        // end
+                        // TODO make this actually send data to the collision module
                         if (valid_collide) begin
-                            //waits NUM_STAGES cycles before first incrementing the counter
-                            //after that it should increment every cycle
                             addr_counter <= addr_counter + 1;
                         end
                     end

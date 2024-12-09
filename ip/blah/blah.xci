@@ -1,13 +1,13 @@
 {
   "schema": "xilinx.com:schema:json_instance:1.0",
   "ip_inst": {
-    "xci_name": "blk_mem_gen_0",
+    "xci_name": "blah",
     "component_reference": "xilinx.com:ip:blk_mem_gen:8.4",
     "ip_revision": "8",
-    "gen_directory": "../../../../project_1.gen/sources_1/ip/blk_mem_gen_0",
+    "gen_directory": "../project_1.gen/sources_1/ip/blah",
     "parameters": {
       "component_parameters": {
-        "Component_Name": [ { "value": "blk_mem_gen_0", "resolve_type": "user", "usage": "all" } ],
+        "Component_Name": [ { "value": "blah", "resolve_type": "user", "usage": "all" } ],
         "Interface_Type": [ { "value": "Native", "resolve_type": "user", "usage": "all" } ],
         "AXI_Type": [ { "value": "AXI4_Full", "resolve_type": "user", "usage": "all" } ],
         "AXI_Slave_Type": [ { "value": "Memory_Slave", "resolve_type": "user", "usage": "all" } ],
@@ -98,7 +98,7 @@
         "C_PRIM_TYPE": [ { "value": "1", "resolve_type": "generated", "format": "long", "usage": "all" } ],
         "C_LOAD_INIT_FILE": [ { "value": "0", "resolve_type": "generated", "format": "long", "usage": "all" } ],
         "C_INIT_FILE_NAME": [ { "value": "no_coe_file_loaded", "resolve_type": "generated", "usage": "all" } ],
-        "C_INIT_FILE": [ { "value": "blk_mem_gen_0.mem", "resolve_type": "generated", "usage": "all" } ],
+        "C_INIT_FILE": [ { "value": "blah.mem", "resolve_type": "generated", "usage": "all" } ],
         "C_USE_DEFAULT_DATA": [ { "value": "0", "resolve_type": "generated", "format": "long", "usage": "all" } ],
         "C_DEFAULT_DATA": [ { "value": "0", "resolve_type": "generated", "usage": "all" } ],
         "C_HAS_RSTA": [ { "value": "0", "resolve_type": "generated", "format": "long", "usage": "all" } ],
@@ -175,7 +175,7 @@
         "IPCONTEXT": [ { "value": "IP_Flow" } ],
         "IPREVISION": [ { "value": "8" } ],
         "MANAGED": [ { "value": "TRUE" } ],
-        "OUTPUTDIR": [ { "value": "../../../../project_1.gen/sources_1/ip/blk_mem_gen_0" } ],
+        "OUTPUTDIR": [ { "value": "../../../../project_1.gen/sources_1/ip/blah" } ],
         "SELECTEDSIMMODEL": [ { "value": "" } ],
         "SHAREDDIR": [ { "value": "." } ],
         "SWVERSION": [ { "value": "2024.1" } ],

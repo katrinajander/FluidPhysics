@@ -97,15 +97,15 @@ module collision (input wire clk_in,
     logic [NUM_RHO_STAGES:0][11:0] rho_36_pipeline;
 
     // delete these
-    logic [7:0] test_zero;
-    logic [7:0] test_one;
-    logic [7:0] test_two;
-    logic [7:0] test_three;
-    logic [7:0] test_four;
-    logic [7:0] test_five;
-    logic [7:0] test_six;
-    logic [7:0] test_seven;
-    logic [7:0] test_eight;
+    // logic [7:0] test_zero;
+    // logic [7:0] test_one;
+    // logic [7:0] test_two;
+    // logic [7:0] test_three;
+    // logic [7:0] test_four;
+    // logic [7:0] test_five;
+    // logic [7:0] test_six;
+    // logic [7:0] test_seven;
+    // logic [7:0] test_eight;
 
     always_comb begin
         rho_extended = {18'b0, rho};
@@ -136,15 +136,15 @@ module collision (input wire clk_in,
         rho <= data_in[0] + data_in[1] + data_in[2] + data_in[3] + data_in[4] + data_in[5] + data_in[6] + data_in[7] + data_in[8];
 
         // delete these
-        test_zero <= data_in[0];
-        test_one <= data_in[1];
-        test_two <= data_in[2];
-        test_three <= data_in[3];
-        test_four <= data_in[4];
-        test_five <= data_in[5];
-        test_six <= data_in[6];
-        test_seven <= data_in[7];
-        test_eight <= data_in[8];
+        // test_zero <= data_in[0];
+        // test_one <= data_in[1];
+        // test_two <= data_in[2];
+        // test_three <= data_in[3];
+        // test_four <= data_in[4];
+        // test_five <= data_in[5];
+        // test_six <= data_in[6];
+        // test_seven <= data_in[7];
+        // test_eight <= data_in[8];
 
         // velocity vectors
         sum_x <= data_in[2] + data_in[3] + data_in[4] - data_in[6] - data_in[7] - data_in[8];

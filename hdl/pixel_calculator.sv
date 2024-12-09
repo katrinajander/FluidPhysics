@@ -24,16 +24,16 @@ always_comb begin
     total_density = data_in[0] + data_in[1] + data_in[2] + data_in[3] + data_in[4] + data_in[5] + data_in[6] +data_in[7] + data_in[8];
     //idk just set rgb to something for now based on total density
     //should do the math here
-    red_out = total_density[2:0];
-    green_out = total_density[5:3];
-    blue_out = total_density[11:6];
+    // red_out = total_density[2:0];
+    // green_out = total_density[5:3];
+    // blue_out = total_density[11:6];
     //pink:
-    // red_out = 219;
-    // green_out = 48;
-    // blue_out = 130;
+    red_out = 219;
+    green_out = 48;
+    blue_out = 130;
 end
 
-always_ff @(posedge clk_in)begin
+always_ff @(posedge pixel_clk_in)begin
     if (addr_out == BRAM_DEPTH) begin
         addr_out <= 0;
     end else begin
