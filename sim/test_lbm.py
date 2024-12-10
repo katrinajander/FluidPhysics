@@ -12,10 +12,10 @@ from cocotb.runner import get_runner
 from cocotb.types import LogicArray
 # import 
 
-async def send_new_divide(dut, dividend, divisor):
-    dut.dividend_in = dividend
-    dut.divisor_in = divisor
-    await ClockCycles(dut.clk_in, 1)
+# async def send_new_divide(dut, dividend, divisor):
+#     dut.dividend_in = dividend
+#     dut.divisor_in = divisor
+#     await ClockCycles(dut.clk_in, 1)
 
 @cocotb.test()
 async def test_a(dut):
@@ -25,39 +25,35 @@ async def test_a(dut):
     dut.rst_in.value = 1
     await ClockCycles(dut.clk_in, 5)
     dut.rst_in.value = 0
-    dut.data_valid_in = 1
-    # await send_new_divide(dut, LogicArray('00000000 00000000 00000000 01100111'), LogicArray('00000000000000000000000000001100'))
-    dut.data_valid_in = 1
-    await send_new_divide(dut, -15, 3)
-    dut.data_valid_in = 1
-    await send_new_divide(dut, -14, -3)
-    dut.data_valid_in = 1
-    await send_new_divide(dut, 18, -3)
-    dut.data_valid_in = 1
-    await send_new_divide(dut, 18, 3)
-    dut.data_valid_in = 1
-    await send_new_divide(dut, 15, -3)
-    await ClockCycles(dut.clk_in, 1)
-    dut.data_valid_in = 0
-    await ClockCycles(dut.clk_in, 100)
-    # await send_pixel_row(dut, 1, 8, 23, 23, 23)
+    #00001010
+    dut.bram_data_in = LogicArray('000010100000101000001010000010100000101000001010000010100000101000001010')
+    # dut.data_valid_in = 1
+    await ClockCycles(dut.clk_in, 40000)
+    # dut.data_in = LogicArray('000001110000000100000011000001110000001100000111000000110000000100000111') #5 in for 09
+    # await ClockCycles(dut.clk_in, 1)
+    # dut.data_valid_in = 0
+    # 00000001 00000001 00000001 00000001 00000001 00000001 00000001 00000001 00000001 (one in each direction)
+    # await send_new_divide(dut, 14, 3)
+    # dut.data_valid_in = 1
 
     await ClockCycles(dut.clk_in, 200)
 
-def divider_runner():
+def lbm_runner():
     """Simulate the counter using the Python runner."""
     hdl_toplevel_lang = os.getenv("HDL_TOPLEVEL_LANG", "verilog")
     sim = os.getenv("SIM", "icarus")
     proj_path = Path(__file__).resolve().parent.parent
     sys.path.append(str(proj_path / "sim" / "model"))
-    sources = [proj_path / "hdl" / "divider.sv"]
+    sources = [proj_path / "hdl" / "lbm.sv"]
+    sources += [proj_path / "hdl" / "collision.sv"]
+    sources += [proj_path / "hdl" / "divider.sv"]
     build_test_args = ["-Wall"]
-    parameters = {} #ADD MORE HERE
+    parameters = {} #ADD MORE HERE?
     sys.path.append(str(proj_path / "sim"))
     runner = get_runner(sim)
     runner.build(
         sources=sources,
-        hdl_toplevel="divider",
+        hdl_toplevel="lbm",
         always=True,
         build_args=build_test_args,
         parameters=parameters,
@@ -66,11 +62,11 @@ def divider_runner():
     )
     run_test_args = []
     runner.test(
-        hdl_toplevel="divider",
-        test_module="test_divider",
+        hdl_toplevel="lbm",
+        test_module="test_lbm",
         test_args=run_test_args,
         waves=True
     )
 
 if __name__ == "__main__":
-    divider_runner()
+    lbm_runner()

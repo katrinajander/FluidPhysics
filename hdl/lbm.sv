@@ -12,7 +12,7 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
     localparam SETUP = 0;
     localparam COLLISION = 1;
     localparam STREAMING = 2;
-    logic state;
+    logic [1:0] state;
 
     localparam BRAM_SIZE = $clog2(BRAM_DEPTH);
     logic [BRAM_SIZE-1:0] addr_counter; //counter from 0 to # lattice points (BRAM_DEPTH) (16 bits)
@@ -32,7 +32,7 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
     always_ff @(posedge clk_in)begin
         if (rst_in)begin
             addr_counter <= 0;
-            //probably more things too TODO
+            state <= SETUP;
         end else begin
             case (state)
                 SETUP: begin 
@@ -76,8 +76,14 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
                     if (addr_counter == BRAM_DEPTH) begin
                         state <= STREAMING;
                         addr_counter <= 0;
+                    end else if (addr_counter == 0) begin
+                        //start things
+                        //but also there is a 2 cycle delay
+                        //pipeline it here ig?
+                        start_collide <= 1; //enable starting new collision
+                        collision_in_data <= bram_data_in; //send this data to collide
                     end else begin
-                        //ok so (temporary?) plan just feed it one value at a time and wait for valid_collide then move on to next value
+                        //ok (temporary?) plan just feed it one value at a time and wait for valid_collide then move on to next value
                         // if there is time, switch over to pipelining it again with read/write cycles alternating
                         if (valid_collide) begin
                             //save the results:
@@ -102,7 +108,7 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
         end
     end
 
-    //instatiate a collider :)
+    //instatiate a collider
     collision collider (.clk_in(clk_in),
                         .rst_in(rst_in),
                         .data_in(collision_in_data), //9 8-bit numbers from BRAM

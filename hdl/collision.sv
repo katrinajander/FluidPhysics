@@ -7,7 +7,7 @@ module collision (input wire clk_in,
                 output logic [8:0][7:0] data_out, //results to write back to BRAM
                 output logic done_colliding_out);
 
-    divider divider_ux (.clk_in(clk_in),
+    divider #(.WIDTH(28)) divider_ux (.clk_in(clk_in),
                 .rst_in(rst_in),
                 .dividend_in(sum_x_extended),
                 .divisor_in(rho_extended),
@@ -18,7 +18,7 @@ module collision (input wire clk_in,
                 .error_out(),
                 .busy_out());
 
-    divider divider_uy ( .clk_in(clk_in),
+    divider #(.WIDTH(28)) divider_uy ( .clk_in(clk_in),
                 .rst_in(rst_in),
                 .dividend_in(sum_y_extended),
                 .divisor_in(rho_extended),
@@ -29,9 +29,9 @@ module collision (input wire clk_in,
                 .error_out(),
                 .busy_out());
 
-    divider divider_rho_36 (.clk_in(clk_in),
+    divider #(.WIDTH(28))divider_rho_36 (.clk_in(clk_in),
                 .rst_in(rst_in),
-                .dividend_in({18'b0, rho}),
+                .dividend_in(rho_extended),
                 .divisor_in(36),
                 .data_valid_in(valid_divide),
                 .quotient_out(one_36th_rho_extended),
@@ -40,9 +40,9 @@ module collision (input wire clk_in,
                 .error_out(),
                 .busy_out());
     
-    divider divider_rho_9 (.clk_in(clk_in),
+    divider #(.WIDTH(28)) divider_rho_9 (.clk_in(clk_in),
                 .rst_in(rst_in),
-                .dividend_in({18'b0, rho}),
+                .dividend_in(rho_extended),
                 .divisor_in(9),
                 .data_valid_in(valid_divide),
                 .quotient_out(one_9th_rho_extended),
@@ -108,9 +108,9 @@ module collision (input wire clk_in,
     // logic [7:0] test_eight;
 
     always_comb begin
-        rho_extended = {18'b0, rho};
-        sum_x_extended = { 10'b0, sum_x, 8'b0};
-        sum_y_extended = {10'b0, sum_y, 8'b0};
+        rho_extended = {14'b0, rho};
+        sum_x_extended = {6'b0, sum_x, 8'b0};
+        sum_y_extended = {6'b0, sum_y, 8'b0};
         store_data_in[0] = data_in;
         valid_out_pipeline[0] = data_valid_in;
         if (divide_rho_valid_out) begin
