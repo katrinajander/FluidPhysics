@@ -23,7 +23,7 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
     logic valid_collide;
 
     always_comb begin
-        addr_out = addr_counter;
+        addr_out = addr_counter - 1;
     end
 
     //              0        1      2         3       4         5       6        7       8
@@ -33,6 +33,7 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
         if (rst_in)begin
             addr_counter <= 0;
             state <= SETUP;
+            start_collide <= 0;
         end else begin
             case (state)
                 SETUP: begin 
@@ -78,13 +79,15 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
                         addr_counter <= 0;
                     end else if (addr_counter == 0) begin
                         //start things
-                        //but also there is a 2 cycle delay
+                        //but also there is a 2 cycle delay aaaaaaah
                         //pipeline it here ig?
                         start_collide <= 1; //enable starting new collision
                         collision_in_data <= bram_data_in; //send this data to collide
+                        addr_counter <= 1; //still want to write to 0, but also want to move on from here lol
                     end else begin
                         //ok (temporary?) plan just feed it one value at a time and wait for valid_collide then move on to next value
                         // if there is time, switch over to pipelining it again with read/write cycles alternating
+                        start_collide <= 0;
                         if (valid_collide) begin
                             //save the results:
                             bram_data_out <= collision_out_data;

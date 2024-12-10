@@ -89,7 +89,7 @@ module collision (input wire clk_in,
     logic divide_y_valid_out;
     logic divide_rho_valid_out;
 
-    localparam NUM_STAGES = 20;
+    localparam NUM_STAGES = 18;
     localparam NUM_RHO_STAGES = 3;
     logic [NUM_STAGES:0][8:0][7:0] store_data_in;
     logic [NUM_STAGES:0] valid_out_pipeline;
@@ -106,6 +106,11 @@ module collision (input wire clk_in,
     // logic [7:0] test_six;
     // logic [7:0] test_seven;
     // logic [7:0] test_eight;
+
+    // more registers for stages (third term taylor series)
+    logic [22:0] ux_shifted;
+    logic [22:0] uy_shifted;
+    logic [22:0] u_2_shifted;
 
     always_comb begin
         rho_extended = {14'b0, rho};
@@ -179,23 +184,24 @@ module collision (input wire clk_in,
         u_squared <= ux * ux + uy * uy;
         u_squared_times_15 <= (3 * (ux * ux + uy * uy)) >> 1;
 
-        //Stage 4 (1 clock cycle)
-        // updating data_out
-        //should clip negative numbers to 0?
-        //rhos should be positive?
+        //Stage 4: more intermediate results - taylor series!
+        //aaaaaaah
+        // these are all the third term of the taylor series for calculating data_out
+        ux_shifted <= ((9*ux_squared) >> 2);
+        uy_shifted <= ((9*uy_squared) >> 2);
+        u_2_shifted <= ((9*(u_squared + two_ux_uy)) >> 2);
+
+        //Stage 5 (1 clock cycle) updating data_out
+        //lol hope this can be done in one clock cycle
         data_out[0] <= (4 * rho_9_pipeline[NUM_RHO_STAGES]) * (1 - u_squared_times_15); // - store_data_in[NUM_STAGES][0]; //center
-        data_out_zero <= (4 * rho_9_pipeline[NUM_RHO_STAGES]) * (1 - u_squared_times_15);// - store_data_in[NUM_STAGES][0];
-        // data_out_rho <= rho_9_pipeline[NUM_RHO_STAGES];
-        // data_out_from_in <= store_data_in[NUM_STAGES][0];
-        // data_out_zero <= rho_9_pipeline[NUM_RHO_STAGES];
-        data_out[1] <= rho_9_pipeline[NUM_RHO_STAGES] * (1 + uy_times_3 + ((9*uy_squared) >> 2) - u_squared_times_15); // - store_data_in[NUM_STAGES][1]; //north
-        data_out[2] <= rho_36_pipeline[NUM_RHO_STAGES] * (1 + ux_times_3 + uy_times_3 + ((9*(ux_squared + two_ux_uy)) >> 2) - u_squared_times_15);// - store_data_in[NUM_STAGES][2]; //northeast
-        data_out[3] <= rho_9_pipeline[NUM_RHO_STAGES] * (1 + uy_times_3 + ((9*ux_squared) >> 2) - u_squared_times_15);// - store_data_in[NUM_STAGES][3]; //east
-        data_out[4] <= rho_36_pipeline[NUM_RHO_STAGES] * (1 + ux_times_3 - uy_times_3 + ((9*(ux_squared + two_ux_uy)) >> 2) - u_squared_times_15);// - store_data_in[NUM_STAGES][4]; //southeast
-        data_out[5] <= rho_9_pipeline[NUM_RHO_STAGES] * (1 - uy_times_3 + ((9*uy_squared) >> 2) - u_squared_times_15);// - store_data_in[NUM_STAGES][5]; //south
-        data_out[6] <= rho_36_pipeline[NUM_RHO_STAGES] * (1 - ux_times_3 - uy_times_3 + ((9*(ux_squared + two_ux_uy)) >> 2) - u_squared_times_15);// - store_data_in[NUM_STAGES][6]; //southwest
-        data_out[7] <= rho_9_pipeline[NUM_RHO_STAGES] * (1 - ux_times_3 + ((9*ux_squared) >> 2) - u_squared_times_15);// - store_data_in[NUM_STAGES][7]; //west
-        data_out[8] <= rho_36_pipeline[NUM_RHO_STAGES] * (1 - ux_times_3 + uy_times_3 + ((9*(ux_squared + two_ux_uy)) >> 2) - u_squared_times_15);// - store_data_in[NUM_STAGES][8]; //northwest
+        data_out[1] <= rho_9_pipeline[NUM_RHO_STAGES] * (1 + uy_times_3 + uy_shifted - u_squared_times_15); // - store_data_in[NUM_STAGES][1]; //north
+        data_out[2] <= rho_36_pipeline[NUM_RHO_STAGES] * (1 + ux_times_3 + uy_times_3 + u_2_shifted - u_squared_times_15);// - store_data_in[NUM_STAGES][2]; //northeast
+        data_out[3] <= rho_9_pipeline[NUM_RHO_STAGES] * (1 + uy_times_3 + ux_shifted - u_squared_times_15);// - store_data_in[NUM_STAGES][3]; //east
+        data_out[4] <= rho_36_pipeline[NUM_RHO_STAGES] * (1 + ux_times_3 - uy_times_3 + u_2_shifted - u_squared_times_15);// - store_data_in[NUM_STAGES][4]; //southeast
+        data_out[5] <= rho_9_pipeline[NUM_RHO_STAGES] * (1 - uy_times_3 + uy_shifted - u_squared_times_15);// - store_data_in[NUM_STAGES][5]; //south
+        data_out[6] <= rho_36_pipeline[NUM_RHO_STAGES] * (1 - ux_times_3 - uy_times_3 + u_2_shifted - u_squared_times_15);// - store_data_in[NUM_STAGES][6]; //southwest
+        data_out[7] <= rho_9_pipeline[NUM_RHO_STAGES] * (1 - ux_times_3 + ux_shifted - u_squared_times_15);// - store_data_in[NUM_STAGES][7]; //west
+        data_out[8] <= rho_36_pipeline[NUM_RHO_STAGES] * (1 - ux_times_3 + uy_times_3 + u_2_shifted - u_squared_times_15);// - store_data_in[NUM_STAGES][8]; //northwest
         done_colliding_out <= valid_out_pipeline[NUM_STAGES];
     end
 
