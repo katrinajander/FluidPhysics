@@ -36,10 +36,11 @@ always_comb begin
         green_out = 0;
         blue_out = 0;
     end else begin
+        //just some function of the fluid density ig
         red_out = {total_density[11:8], 3'b0};
         green_out = {total_density[7:4], 3'b0};
         blue_out = {total_density[3:0], 3'b0};
-        if (test_button) begin //make pink when button press
+        if (test_button) begin //make pink when button press :)
             red_out = 219;
             green_out = 48;
             blue_out = 130;

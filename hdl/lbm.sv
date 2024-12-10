@@ -45,6 +45,7 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
                     end else begin
                         //set up fluid flow + barriers here. should put a different barrier based on switch combinations
                         //write to address at position # counter in the BRAM for East
+                        //TODO 2 cycle delay here too ig but if theyre all the same it doesnt matter
                         for (int i=0; i<9; i=i+1)begin
                             case (sw_in[1:0])
                                 2'b00: begin
@@ -79,8 +80,8 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
                         addr_counter <= 0;
                     end else if (addr_counter == 0) begin
                         //start things
-                        //but also there is a 2 cycle delay aaaaaaah
-                        //pipeline it here ig?
+                        //TODO but also there is a 2 cycle delay
+                        //pipeline it here
                         start_collide <= 1; //enable starting new collision
                         collision_in_data <= bram_data_in; //send this data to collide
                         addr_counter <= 1; //still want to write to 0, but also want to move on from here lol
