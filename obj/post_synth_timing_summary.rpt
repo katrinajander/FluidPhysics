@@ -1,8 +1,8 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
 ---------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2024.1 (lin64) Build 5076996 Wed May 22 18:36:09 MDT 2024
-| Date         : Wed Dec 11 13:48:19 2024
-| Host         : eecs-digital-19 running 64-bit Ubuntu 24.04.1 LTS
+| Date         : Wed Dec 11 14:20:11 2024
+| Host         : eecs-digital-34 running 64-bit Ubuntu 24.04.1 LTS
 | Command      : report_timing_summary -file obj/post_synth_timing_summary.rpt
 | Design       : top_level
 | Device       : 7s50-csga324
@@ -140,7 +140,7 @@ Table of Contents
 
     WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints     WPWS(ns)     TPWS(ns)  TPWS Failing Endpoints  TPWS Total Endpoints  
     -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------     --------     --------  ----------------------  --------------------  
-      0.104        0.000                      0                 5064        0.003        0.000                      0                 5064        0.538        0.000                       0                  2345  
+      1.168        0.000                      0                 5064        0.003        0.000                      0                 5064        0.538        0.000                       0                  2345  
 
 
 All user specified timing constraints are met.
@@ -167,7 +167,7 @@ gclk                   {0.000 4.000}        10.000          100.000
 Clock                      WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints     WPWS(ns)     TPWS(ns)  TPWS Failing Endpoints  TPWS Total Endpoints  
 -----                      -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------     --------     --------  ----------------------  --------------------  
 gclk                         1.168        0.000                      0                 3920        0.036        0.000                      0                 3920        2.000        0.000                       0                  2132  
-  clk_pixel_clk_wiz_0        0.104        0.000                      0                 1144        0.003        0.000                      0                 1144        6.234        0.000                       0                   202  
+  clk_pixel_clk_wiz_0        1.402        0.000                      0                 1144        0.003        0.000                      0                 1144        6.234        0.000                       0                   202  
   clk_tmds_clk_wiz_0                                                                                                                                                     0.538        0.000                       0                     8  
   clkfbout_clk_wiz_0                                                                                                                                                    47.845        0.000                       0                     3  
 
@@ -353,7 +353,7 @@ High Pulse Width  Slow    MMCME2_ADV/CLKIN1  n/a            2.000         4.000 
 From Clock:  clk_pixel_clk_wiz_0
   To Clock:  clk_pixel_clk_wiz_0
 
-Setup :            0  Failing Endpoints,  Worst Slack        0.104ns,  Total Violation        0.000ns
+Setup :            0  Failing Endpoints,  Worst Slack        1.402ns,  Total Violation        0.000ns
 Hold  :            0  Failing Endpoints,  Worst Slack        0.003ns,  Total Violation        0.000ns
 PW    :            0  Failing Endpoints,  Worst Slack        6.234ns,  Total Violation        0.000ns
 ---------------------------------------------------------------------------------------------------
@@ -361,16 +361,16 @@ PW    :            0  Failing Endpoints,  Worst Slack        6.234ns,  Total Vio
 
 Max Delay Paths
 --------------------------------------------------------------------------------------
-Slack (MET) :             0.104ns  (required time - arrival time)
+Slack (MET) :             1.402ns  (required time - arrival time)
   Source:                 genblk1[1].lattice_ram/U0/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[4].ram.r/prim_noinit.ram/DEVICE_7SERIES.NO_BMM_INFO.TRUE_DP.SIMPLE_PRIM36.ram/CLKBWRCLK
                             (rising edge-triggered cell RAMB36E1 clocked by clk_pixel_clk_wiz_0  {rise@0.000ns fall@6.734ns period=13.468ns})
-  Destination:            tmds_blue/tally_reg[3]/D
+  Destination:            tmds_red/tally_reg[3]/D
                             (rising edge-triggered cell FDRE clocked by clk_pixel_clk_wiz_0  {rise@0.000ns fall@6.734ns period=13.468ns})
   Path Group:             clk_pixel_clk_wiz_0
   Path Type:              Setup (Max at Slow Process Corner)
   Requirement:            13.468ns  (clk_pixel_clk_wiz_0 rise@13.468ns - clk_pixel_clk_wiz_0 rise@0.000ns)
-  Data Path Delay:        13.080ns  (logic 4.682ns (35.796%)  route 8.398ns (64.204%))
-  Logic Levels:           15  (CARRY4=3 LUT2=1 LUT3=2 LUT4=3 LUT6=5 MUXF7=1)
+  Data Path Delay:        11.817ns  (logic 4.775ns (40.409%)  route 7.042ns (59.591%))
+  Logic Levels:           14  (CARRY4=3 LUT3=3 LUT4=2 LUT6=4 MUXF7=2)
   Clock Path Skew:        -0.145ns (DCD - SCD + CPR)
     Destination Clock Delay (DCD):    2.876ns = ( 16.344 - 13.468 ) 
     Source Clock Delay      (SCD):    3.136ns
@@ -403,37 +403,35 @@ Slack (MET) :             0.104ns  (required time - arrival time)
                          LUT6 (Prop_lut6_I5_O)        0.124     4.941 r  genblk1[1].lattice_ram/U0/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/has_mux_b.B/doutb[3]_INST_0_i_2/O
                          net (fo=1, unplaced)         0.000     4.941    genblk1[1].lattice_ram/U0/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/has_mux_b.B/doutb[3]_INST_0_i_2_n_0
                          MUXF7 (Prop_muxf7_I1_O)      0.245     5.186 r  genblk1[1].lattice_ram/U0/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/has_mux_b.B/doutb[3]_INST_0/O
-                         net (fo=2, unplaced)         0.916     6.102    pixels/red_out3__52_carry__0_0[3]
-                         LUT3 (Prop_lut3_I0_O)        0.323     6.425 r  pixels/red_out3__52_carry__0_i_4/O
-                         net (fo=2, unplaced)         0.643     7.068    pixels/red_out3__52_carry__0_i_4_n_0
-                         LUT4 (Prop_lut4_I3_O)        0.332     7.400 r  pixels/red_out3__52_carry__0_i_8/O
-                         net (fo=1, unplaced)         0.000     7.400    pixels/red_out3__52_carry__0_i_8_n_0
+                         net (fo=2, unplaced)         0.916     6.102    pixels/red_out0__52_carry__0_0[3]
+                         LUT3 (Prop_lut3_I0_O)        0.323     6.425 r  pixels/red_out0__52_carry__0_i_4/O
+                         net (fo=2, unplaced)         0.643     7.068    pixels/red_out0__52_carry__0_i_4_n_0
+                         LUT4 (Prop_lut4_I3_O)        0.332     7.400 r  pixels/red_out0__52_carry__0_i_8/O
+                         net (fo=1, unplaced)         0.000     7.400    pixels/red_out0__52_carry__0_i_8_n_0
                          CARRY4 (Prop_carry4_S[0]_O[2])
-                                                      0.547     7.947 r  pixels/red_out3__52_carry__0/O[2]
-                         net (fo=2, unplaced)         0.916     8.863    pixels/red_out3__52_carry__0_n_5
-                         LUT3 (Prop_lut3_I0_O)        0.330     9.193 r  pixels/red_out3__78_carry__0_i_1/O
-                         net (fo=2, unplaced)         0.500     9.693    pixels/red_out3__78_carry__0_i_1_n_0
-                         LUT4 (Prop_lut4_I3_O)        0.327    10.020 r  pixels/red_out3__78_carry__0_i_5/O
-                         net (fo=1, unplaced)         0.000    10.020    pixels/red_out3__78_carry__0_i_5_n_0
+                                                      0.547     7.947 r  pixels/red_out0__52_carry__0/O[2]
+                         net (fo=2, unplaced)         0.916     8.863    pixels/red_out0__52_carry__0_n_5
+                         LUT3 (Prop_lut3_I0_O)        0.330     9.193 r  pixels/red_out0__78_carry__0_i_1/O
+                         net (fo=2, unplaced)         0.500     9.693    pixels/red_out0__78_carry__0_i_1_n_0
+                         LUT4 (Prop_lut4_I3_O)        0.327    10.020 r  pixels/red_out0__78_carry__0_i_5/O
+                         net (fo=1, unplaced)         0.000    10.020    pixels/red_out0__78_carry__0_i_5_n_0
                          CARRY4 (Prop_carry4_S[3]_CO[3])
-                                                      0.401    10.421 r  pixels/red_out3__78_carry__0/CO[3]
-                         net (fo=1, unplaced)         0.000    10.421    pixels/red_out3__78_carry__0_n_0
-                         CARRY4 (Prop_carry4_CI_O[2])
-                                                      0.256    10.677 f  pixels/red_out3__78_carry__1/O[2]
-                         net (fo=14, unplaced)        0.503    11.180    pixels/total_density[10]
-                         LUT4 (Prop_lut4_I1_O)        0.301    11.481 r  pixels/tmds_out[5]_i_6/O
-                         net (fo=1, unplaced)         0.902    12.383    mvg/tmds_out_reg[3]
-                         LUT6 (Prop_lut6_I2_O)        0.124    12.507 r  mvg/tmds_out[5]_i_2__1/O
-                         net (fo=50, unplaced)        0.531    13.038    mvg/vcount_out_reg[9]_2
-                         LUT2 (Prop_lut2_I0_O)        0.118    13.156 r  mvg/tmds_out[0]_i_2/O
-                         net (fo=7, unplaced)         1.146    14.302    pixels/tmds_out_reg[1]
-                         LUT6 (Prop_lut6_I0_O)        0.124    14.426 r  pixels/tally[4]_i_21/O
-                         net (fo=2, unplaced)         1.122    15.548    pixels/tally[4]_i_21_n_0
-                         LUT6 (Prop_lut6_I0_O)        0.124    15.672 r  pixels/tally[3]_i_4/O
-                         net (fo=1, unplaced)         0.419    16.091    pixels/tally[3]_i_4_n_0
-                         LUT6 (Prop_lut6_I3_O)        0.124    16.215 r  pixels/tally[3]_i_1/O
-                         net (fo=1, unplaced)         0.000    16.215    tmds_blue/D[2]
-                         FDRE                                         r  tmds_blue/tally_reg[3]/D
+                                                      0.401    10.421 r  pixels/red_out0__78_carry__0/CO[3]
+                         net (fo=1, unplaced)         0.000    10.421    pixels/red_out0__78_carry__0_n_0
+                         CARRY4 (Prop_carry4_CI_O[1])
+                                                      0.348    10.769 r  pixels/red_out0__78_carry__1/O[1]
+                         net (fo=15, unplaced)        0.770    11.539    pixels/red_out0__78_carry__1_i_6_0[1]
+                         LUT6 (Prop_lut6_I0_O)        0.306    11.845 r  pixels/tmds_out[7]_i_2__0/O
+                         net (fo=7, unplaced)         1.146    12.991    pixels/btn[1]_10
+                         LUT6 (Prop_lut6_I0_O)        0.124    13.115 f  pixels/tally[3]_i_9__0/O
+                         net (fo=1, unplaced)         0.902    14.017    pixels/tally[3]_i_9__0_n_0
+                         LUT6 (Prop_lut6_I2_O)        0.124    14.141 r  pixels/tally[3]_i_4__0/O
+                         net (fo=1, unplaced)         0.449    14.590    pixels/tally[3]_i_4__0_n_0
+                         LUT3 (Prop_lut3_I0_O)        0.124    14.714 r  pixels/tally[3]_i_2__0/O
+                         net (fo=1, unplaced)         0.000    14.714    pixels/tally[3]_i_2__0_n_0
+                         MUXF7 (Prop_muxf7_I0_O)      0.238    14.952 r  pixels/tally_reg[3]_i_1__0/O
+                         net (fo=1, unplaced)         0.000    14.952    tmds_red/D[2]
+                         FDRE                                         r  tmds_red/tally_reg[3]/D
   -------------------------------------------------------------------    -------------------
 
                          (clock clk_pixel_clk_wiz_0 rise edge)
@@ -448,16 +446,16 @@ Slack (MET) :             0.104ns  (required time - arrival time)
                                                      -1.290    14.838 r  mhdmicw/mmcm_adv_inst/CLKOUT0
                          net (fo=1, unplaced)         0.760    15.598    mhdmicw/clk_pixel_clk_wiz_0
                          BUFG (Prop_bufg_I_O)         0.091    15.689 r  mhdmicw/clkout1_buf/O
-                         net (fo=201, unplaced)       0.655    16.344    tmds_blue/clk_pixel
-                         FDRE                                         r  tmds_blue/tally_reg[3]/C
+                         net (fo=201, unplaced)       0.655    16.344    tmds_red/clk_pixel
+                         FDRE                                         r  tmds_red/tally_reg[3]/C
                          clock pessimism              0.115    16.459    
                          clock uncertainty           -0.168    16.291    
-                         FDRE (Setup_fdre_C_D)        0.029    16.320    tmds_blue/tally_reg[3]
+                         FDRE (Setup_fdre_C_D)        0.064    16.355    tmds_red/tally_reg[3]
   -------------------------------------------------------------------
-                         required time                         16.320    
-                         arrival time                         -16.215    
+                         required time                         16.355    
+                         arrival time                         -14.952    
   -------------------------------------------------------------------
-                         slack                                  0.104    
+                         slack                                  1.402    
 
 
 
