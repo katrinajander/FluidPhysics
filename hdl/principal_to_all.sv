@@ -33,28 +33,32 @@ module principal_to_all #(parameter HPIXELS=205, parameter VPIXELS=154)
     //
     // reverse order works for rest
     always_comb begin
-        hor_out = {
-            hor_in,
-            hor_in,
-            hor_in,
-            HPIXELS-hor_in,
-            HPIXELS-hor_in,
-            HPIXELS-hor_in,
-            HPIXELS-hor_in,
-            hor_in,
-            hor_in
-        };
-        vert_out = {
-            vert_in,
-            vert_in,
-            vert_in,
-            VPIXELS-vert_in,
-            VPIXELS-vert_in,
-            VPIXELS-vert_in,
-            VPIXELS-vert_in,
-            vert_in,
-            vert_in
-        };
+        hor_out[0] = hor_in;
+        vert_out[0] = vert_in;
+
+        hor_out[1] = hor_in;
+        vert_out[1] = vert_in;
+
+        hor_out[2] = hor_in;
+        vert_out[2] = vert_in;
+
+        hor_out[7] = hor_in;
+        vert_out[7] = vert_in;
+
+        hor_out[8] = hor_in;
+        vert_out[8] = vert_in;
+
+        hor_out[3] = HPIXELS-hor_in-1;
+        vert_out[3] = VPIXELS-vert_in-1;
+
+        hor_out[4] = HPIXELS-hor_in-1;
+        vert_out[4] = VPIXELS-vert_in-1;
+
+        hor_out[5] = HPIXELS-hor_in-1;
+        vert_out[5] = VPIXELS-vert_in-1;
+
+        hor_out[6] = HPIXELS-hor_in-1;
+        vert_out[6] = VPIXELS-vert_in-1;
     end
 endmodule
 

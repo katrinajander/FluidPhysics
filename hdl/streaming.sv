@@ -24,7 +24,6 @@ module streaming #(parameter HPIXELS=205, parameter VPIXELS=154)
     logic [8:0][HOR_SIZE-1:0] read_hor;
     logic [8:0][VERT_SIZE-1:0] read_vert;
     logic [8:0][BRAM_SIZE-1:0] read_addr, write_addr;
-    assign addr_out = valid_write ? write_addr : read_addr;
 
     logic valid_read, valid_write;
 
@@ -49,7 +48,7 @@ module streaming #(parameter HPIXELS=205, parameter VPIXELS=154)
         .val_out(data_out)
     );
 
-    pipeline #(RW_LATENCY, 1) valid_pipe(
+    pipeline #(RW_LATENCY-1, 1) valid_pipe(
         .clk_in(clk_in),
         .val_in(valid_read),
         .val_out(valid_write)
@@ -60,6 +59,7 @@ module streaming #(parameter HPIXELS=205, parameter VPIXELS=154)
     localparam WRITING = 2;
 
     always_ff @(posedge clk_in) begin
+        addr_out <= valid_write ? write_addr : read_addr;
         if(rst_in) begin
             valid_data_out <= 0;
             done <= 0;

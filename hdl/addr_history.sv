@@ -40,7 +40,7 @@ module addr_history #(parameter HPIXELS=205, parameter VPIXELS=154, parameter LA
         vert_intermediate[0] = vert_in[0];
 
         hor_intermediate[1] = hor_in[1];
-        vert_intermediate[1] = vert_in[1] == 0 ? VPIXELS-1 : vert_in[2] - 1;
+        vert_intermediate[1] = vert_in[1] == 0 ? VPIXELS-1 : vert_in[1] - 1;
 
         hor_intermediate[2] = hor_in[2] == HPIXELS - 1 ? 0 : hor_in[2] + 1;
         vert_intermediate[2] = vert_in[2] == 0 ? VPIXELS-1 : vert_in[2] - 1;
@@ -60,8 +60,8 @@ module addr_history #(parameter HPIXELS=205, parameter VPIXELS=154, parameter LA
         hor_intermediate[7] = hor_in[7] == 0 ? HPIXELS - 1 : hor_in[7] - 1;
         vert_intermediate[7] = vert_in[7];
 
-        hor_intermediate[8] = hor_in[8] ==  0 ? HPIXELS - 1 : hor_in[8] - 1;
-        vert_intermediate[8] = vert_in[8] == 0 ? VPIXELS - 1 : vert_in - 1;
+        hor_intermediate[8] = hor_in[8] == 0 ? HPIXELS - 1 : hor_in[8] - 1;
+        vert_intermediate[8] = vert_in[8] == 0 ? VPIXELS - 1 : vert_in[8] - 1;
     end
 endmodule
 `default_nettype wire

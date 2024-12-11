@@ -44,6 +44,8 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
             addr_counter <= 0;
             state <= SETUP;
             start_collide <= 0;
+            start_collide_pipe <= 0;
+            prev_btn <= 1;
             start_streaming <= 0;
             valid_data_out <= 0;
         end else begin
@@ -79,9 +81,9 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
                                 end
                                 default: begin
                                     if (i == 3) begin
-                                        bram_data_out[i] <= addr_counter & 8'b01111111; //east! 00001010
+                                        bram_data_out[i] <= addr_counter & 8'b01111111; //east!
                                     end else begin
-                                        bram_data_out[i] <= addr_counter & 8'b00001111; //every other direction!
+                                        bram_data_out[i] <= 8'b00001111; //every other direction!
                                     end
                                     valid_data_out <= 1;
                                 end
@@ -125,6 +127,7 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
                     start_streaming <= 0;
                     state <= done_streaming ? WAITING : STREAMING;
                     bram_data_out <= streaming_out_data;
+                    //bram_data_out <= 72'h0A0A0A0A0A0A0A0A0A;
                     addr_out <= streaming_addr_out;
                     valid_data_out <= streaming_valid_out;
                     addr_counter <= 0;

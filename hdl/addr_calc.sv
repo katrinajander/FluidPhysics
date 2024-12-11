@@ -9,6 +9,6 @@ module addr_calc #(parameter HPIXELS=205, parameter VPIXELS=154) (
     localparam BRAM_DEPTH = HPIXELS * VPIXELS;
     localparam BRAM_SIZE = $clog2(BRAM_DEPTH);
 
-    assign addr_out = HOR_SIZE * vert_in + hor_in;
+    assign addr_out = HPIXELS * vert_in + hor_in;
 endmodule
 `default_nettype wire
