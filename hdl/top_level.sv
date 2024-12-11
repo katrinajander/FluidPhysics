@@ -67,6 +67,7 @@ module top_level
                 .rst_in(sys_rst),
                 .bram_data_in(lbm_bram_data_read),
                 .sw_in(sw),
+                .btn_in(btn[2]),
                 .addr_out(addra),
                 .bram_data_out(lbm_bram_data_write),
                 .valid_data_out(lbm_write_enable));
