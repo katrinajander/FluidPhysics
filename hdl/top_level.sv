@@ -15,7 +15,7 @@ module top_level
    );
 
   // shut up those RGBs
-  assign led = sw;
+  assign led = {lbm_state, sw[13:0]};
   assign rgb0 = 0;
   assign rgb1 = 0;
 
@@ -63,12 +63,14 @@ module top_level
     end
   endgenerate
 
+  logic [1:0] lbm_state;
   lbm lbm_state_machine (.clk_in(clk_buf),
                 .rst_in(sys_rst),
                 .bram_data_in(lbm_bram_data_read),
                 .sw_in(sw),
                 .btn_in(btn[2]),
                 .addr_out(addra),
+                .state(lbm_state),
                 .bram_data_out(lbm_bram_data_write),
                 .valid_data_out(lbm_write_enable));
  

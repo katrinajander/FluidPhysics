@@ -5,6 +5,7 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
                                             input wire [8:0][7:0] bram_data_in, //data read from bram
                                             input wire [15:0] sw_in,
                                             input wire btn_in,
+                                            output logic[1:0] state,
                                             output logic [8:0][BRAM_SIZE-1:0] addr_out,
                                             output logic [8:0][7:0] bram_data_out,
                                             output logic valid_data_out); //data to write to bram
@@ -14,7 +15,6 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
     localparam COLLISION = 1;
     localparam STREAMING = 2;
     localparam WAITING = 3;
-    logic [1:0] state;
 
     localparam BRAM_SIZE = $clog2(BRAM_DEPTH);
     logic [BRAM_SIZE-1:0] addr_counter; //counter from 0 to # lattice points (BRAM_DEPTH) (16 bits)
@@ -80,11 +80,7 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
                                     valid_data_out <= 1;
                                 end
                                 default: begin
-                                    if (i == 3) begin
-                                        bram_data_out[i] <= addr_counter & 8'b01111111; //east!
-                                    end else begin
-                                        bram_data_out[i] <= 8'b00001111; //every other direction!
-                                    end
+                                    bram_data_out[i] <= addr_counter & 8'b01111111; //east!
                                     valid_data_out <= 1;
                                 end
                             endcase
@@ -127,7 +123,6 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
                     start_streaming <= 0;
                     state <= done_streaming ? WAITING : STREAMING;
                     bram_data_out <= streaming_out_data;
-                    //bram_data_out <= 72'h0A0A0A0A0A0A0A0A0A;
                     addr_out <= streaming_addr_out;
                     valid_data_out <= streaming_valid_out;
                     addr_counter <= 0;

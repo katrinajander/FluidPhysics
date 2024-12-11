@@ -1,8 +1,8 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
 ---------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2024.1 (lin64) Build 5076996 Wed May 22 18:36:09 MDT 2024
-| Date         : Wed Dec 11 17:24:00 2024
-| Host         : eecs-digital-16 running 64-bit Ubuntu 24.04.1 LTS
+| Date         : Wed Dec 11 18:03:43 2024
+| Host         : eecs-digital-27 running 64-bit Ubuntu 24.04.1 LTS
 | Command      : report_timing -file obj/post_synth_timing.rpt
 | Design       : top_level
 | Device       : 7s50-csga324
@@ -12,16 +12,16 @@ Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2024 Advanc
 
 Timing Report
 
-Slack (MET) :             0.463ns  (required time - arrival time)
-  Source:                 lbm_state_machine/streamer/principal_vert_reg[6]/C
+Slack (MET) :             0.677ns  (required time - arrival time)
+  Source:                 lbm_state_machine/streamer/principal_vert_reg[5]/C
                             (rising edge-triggered cell FDRE clocked by gclk  {rise@0.000ns fall@4.000ns period=10.000ns})
-  Destination:            lbm_state_machine/streamer/addr_out_reg[3][14]/S
-                            (rising edge-triggered cell FDSE clocked by gclk  {rise@0.000ns fall@4.000ns period=10.000ns})
+  Destination:            lbm_state_machine/streamer/hist/addr_pipe/pipe_reg[0][103]/D
+                            (rising edge-triggered cell FDRE clocked by gclk  {rise@0.000ns fall@4.000ns period=10.000ns})
   Path Group:             gclk
   Path Type:              Setup (Max at Slow Process Corner)
   Requirement:            10.000ns  (gclk rise@10.000ns - gclk rise@0.000ns)
-  Data Path Delay:        8.924ns  (logic 3.915ns (43.870%)  route 5.009ns (56.130%))
-  Logic Levels:           12  (CARRY4=6 LUT2=2 LUT5=2 LUT6=2)
+  Data Path Delay:        9.205ns  (logic 4.140ns (44.976%)  route 5.065ns (55.024%))
+  Logic Levels:           13  (CARRY4=6 LUT2=1 LUT3=2 LUT5=2 LUT6=2)
   Clock Path Skew:        -0.145ns (DCD - SCD + CPR)
     Destination Clock Delay (DCD):    2.660ns = ( 12.660 - 10.000 ) 
     Source Clock Delay      (SCD):    2.920ns
@@ -40,42 +40,44 @@ Slack (MET) :             0.463ns  (required time - arrival time)
     N15                  IBUF (Prop_ibuf_I_O)         1.440     1.440 r  clk_100mhz_IBUF_inst/O
                          net (fo=1, unplaced)         0.800     2.240    clk_100mhz_IBUF
                          BUFG (Prop_bufg_I_O)         0.096     2.336 r  clk_buffer/O
-                         net (fo=838, unplaced)       0.584     2.920    lbm_state_machine/streamer/clk_buf
-                         FDRE                                         r  lbm_state_machine/streamer/principal_vert_reg[6]/C
+                         net (fo=1048, unplaced)      0.584     2.920    lbm_state_machine/streamer/clk_buf
+                         FDRE                                         r  lbm_state_machine/streamer/principal_vert_reg[5]/C
   -------------------------------------------------------------------    -------------------
-                         FDRE (Prop_fdre_C_Q)         0.456     3.376 r  lbm_state_machine/streamer/principal_vert_reg[6]/Q
-                         net (fo=29, unplaced)        0.539     3.915    lbm_state_machine/streamer/explode/genblk1[3].calc/Q[6]
-                         LUT2 (Prop_lut2_I0_O)        0.295     4.210 r  lbm_state_machine/streamer/explode/genblk1[3].calc/addr_out0_carry__0_i_8__1/O
-                         net (fo=3, unplaced)         0.467     4.677    lbm_state_machine/streamer/explode/genblk1[3].calc/principal_vert_reg[6]
-                         LUT6 (Prop_lut6_I4_O)        0.124     4.801 r  lbm_state_machine/streamer/explode/genblk1[3].calc/addr_out0_carry__0_i_1__0/O
-                         net (fo=12, unplaced)        0.497     5.298    lbm_state_machine/streamer/explode/genblk1[3].calc/DI[0]
-                         LUT6 (Prop_lut6_I0_O)        0.124     5.422 r  lbm_state_machine/streamer/explode/genblk1[3].calc/addr_out0_carry__0_i_5__1/O
-                         net (fo=1, unplaced)         0.000     5.422    lbm_state_machine/streamer/explode/genblk1[3].calc/addr_out0_carry__0_i_5__1_n_0
-                         CARRY4 (Prop_carry4_S[2]_CO[3])
-                                                      0.398     5.820 r  lbm_state_machine/streamer/explode/genblk1[3].calc/addr_out0_carry__0/CO[3]
-                         net (fo=1, unplaced)         0.000     5.820    lbm_state_machine/streamer/explode/genblk1[3].calc/addr_out0_carry__0_n_0
+                         FDRE (Prop_fdre_C_Q)         0.456     3.376 r  lbm_state_machine/streamer/principal_vert_reg[5]/Q
+                         net (fo=41, unplaced)        0.883     4.259    lbm_state_machine/streamer/explode/genblk1[3].calc/Q[5]
+                         LUT5 (Prop_lut5_I0_O)        0.323     4.582 r  lbm_state_machine/streamer/explode/genblk1[3].calc/addr_out0_carry__0_i_8__0/O
+                         net (fo=2, unplaced)         0.460     5.042    lbm_state_machine/streamer/explode/genblk1[3].calc/addr_out0_carry__0_i_8__0_n_0
+                         LUT3 (Prop_lut3_I1_O)        0.124     5.166 r  lbm_state_machine/streamer/explode/genblk1[3].calc/addr_out0_carry__0_i_1/O
+                         net (fo=8, unplaced)         0.487     5.653    lbm_state_machine/streamer/hist/genblk1[4].calc/addr_out0__25_carry__2_i_1[0]
+                         LUT6 (Prop_lut6_I0_O)        0.124     5.777 r  lbm_state_machine/streamer/hist/genblk1[4].calc/addr_out0_carry_i_9/O
+                         net (fo=5, unplaced)         0.477     6.254    lbm_state_machine/streamer/hist/genblk1[4].calc/addr_out0_carry_i_9_n_0
+                         LUT6 (Prop_lut6_I0_O)        0.124     6.378 r  lbm_state_machine/streamer/hist/genblk1[4].calc/addr_out0_carry_i_8/O
+                         net (fo=12, unplaced)        0.497     6.875    lbm_state_machine/streamer/hist/genblk1[4].calc/principal_vert_reg[4]
+                         LUT2 (Prop_lut2_I1_O)        0.124     6.999 r  lbm_state_machine/streamer/hist/genblk1[4].calc/addr_out0_carry__0_i_6/O
+                         net (fo=1, unplaced)         0.000     6.999    lbm_state_machine/streamer/hist/genblk1[4].calc/addr_out0_carry__0_i_6_n_0
+                         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.550     7.549 r  lbm_state_machine/streamer/hist/genblk1[4].calc/addr_out0_carry__0/CO[3]
+                         net (fo=1, unplaced)         0.000     7.549    lbm_state_machine/streamer/hist/genblk1[4].calc/addr_out0_carry__0_n_0
                          CARRY4 (Prop_carry4_CI_O[0])
-                                                      0.235     6.055 r  lbm_state_machine/streamer/explode/genblk1[3].calc/addr_out0_carry__1/O[0]
-                         net (fo=3, unplaced)         0.329     6.384    lbm_state_machine/streamer/explode/genblk1[3].calc/addr_out0_carry__1_n_7
-                         LUT5 (Prop_lut5_I3_O)        0.295     6.679 r  lbm_state_machine/streamer/explode/genblk1[3].calc/addr_out0__25_carry__0_i_9/O
-                         net (fo=3, unplaced)         0.467     7.146    lbm_state_machine/streamer/explode/genblk1[3].calc/addr_out0__25_carry__0_i_9_n_0
-                         LUT5 (Prop_lut5_I3_O)        0.124     7.270 r  lbm_state_machine/streamer/explode/genblk1[3].calc/addr_out0__25_carry__0_i_1__1/O
-                         net (fo=1, unplaced)         0.473     7.743    lbm_state_machine/streamer/explode/genblk1[3].calc/addr_out0__25_carry__0_i_1__1_n_0
+                                                      0.235     7.784 r  lbm_state_machine/streamer/hist/genblk1[4].calc/addr_out0_carry__1/O[0]
+                         net (fo=3, unplaced)         0.329     8.113    lbm_state_machine/streamer/hist/genblk1[4].calc/addr_out0_carry__1_n_7
+                         LUT3 (Prop_lut3_I2_O)        0.295     8.408 r  lbm_state_machine/streamer/hist/genblk1[4].calc/addr_out0__25_carry__0_i_9__2/O
+                         net (fo=3, unplaced)         0.467     8.875    lbm_state_machine/streamer/hist/genblk1[4].calc/addr_out0__25_carry__0_i_9__2_n_0
+                         LUT5 (Prop_lut5_I3_O)        0.124     8.999 r  lbm_state_machine/streamer/hist/genblk1[4].calc/addr_out0__25_carry__0_i_1__2/O
+                         net (fo=1, unplaced)         0.473     9.472    lbm_state_machine/streamer/hist/genblk1[4].calc/addr_out0__25_carry__0_i_1__2_n_0
                          CARRY4 (Prop_carry4_DI[3]_CO[3])
-                                                      0.385     8.128 r  lbm_state_machine/streamer/explode/genblk1[3].calc/addr_out0__25_carry__0/CO[3]
-                         net (fo=1, unplaced)         0.000     8.128    lbm_state_machine/streamer/explode/genblk1[3].calc/addr_out0__25_carry__0_n_0
+                                                      0.385     9.857 r  lbm_state_machine/streamer/hist/genblk1[4].calc/addr_out0__25_carry__0/CO[3]
+                         net (fo=1, unplaced)         0.000     9.857    lbm_state_machine/streamer/hist/genblk1[4].calc/addr_out0__25_carry__0_n_0
                          CARRY4 (Prop_carry4_CI_O[0])
-                                                      0.235     8.363 r  lbm_state_machine/streamer/explode/genblk1[3].calc/addr_out0__25_carry__1/O[0]
-                         net (fo=2, unplaced)         0.985     9.348    lbm_state_machine/streamer/explode/genblk1[3].calc/addr_out0__25_carry__1_n_7
+                                                      0.235    10.092 r  lbm_state_machine/streamer/hist/genblk1[4].calc/addr_out0__25_carry__1/O[0]
+                         net (fo=3, unplaced)         0.992    11.084    lbm_state_machine/streamer/hist/genblk1[4].calc/addr_out0__25_carry__1_n_7
                          CARRY4 (Prop_carry4_S[2]_CO[3])
-                                                      0.693    10.041 r  lbm_state_machine/streamer/explode/genblk1[3].calc/addr_out_reg[6][11]_i_3/CO[3]
-                         net (fo=1, unplaced)         0.000    10.041    lbm_state_machine/streamer/explode/genblk1[3].calc/addr_out_reg[6][11]_i_3_n_0
-                         CARRY4 (Prop_carry4_CI_O[2])
-                                                      0.256    10.297 r  lbm_state_machine/streamer/explode/genblk1[3].calc/addr_out_reg[6][14]_i_3/O[2]
-                         net (fo=1, unplaced)         0.452    10.749    lbm_state_machine/streamer/explode/genblk1[3].calc/addr_out_reg[6][14]_i_3_n_5
-                         LUT2 (Prop_lut2_I0_O)        0.295    11.044 r  lbm_state_machine/streamer/explode/genblk1[3].calc/addr_out[6][14]_i_1/O
-                         net (fo=4, unplaced)         0.800    11.844    lbm_state_machine/streamer/explode_n_74
-                         FDSE                                         r  lbm_state_machine/streamer/addr_out_reg[3][14]/S
+                                                      0.693    11.777 r  lbm_state_machine/streamer/hist/genblk1[4].calc/pipe_reg[0][101]_i_1/CO[3]
+                         net (fo=1, unplaced)         0.000    11.777    lbm_state_machine/streamer/hist/genblk1[4].calc/pipe_reg[0][101]_i_1_n_0
+                         CARRY4 (Prop_carry4_CI_O[1])
+                                                      0.348    12.125 r  lbm_state_machine/streamer/hist/genblk1[4].calc/pipe_reg[0][104]_i_1/O[1]
+                         net (fo=1, unplaced)         0.000    12.125    lbm_state_machine/streamer/hist/addr_pipe/O[1]
+                         FDRE                                         r  lbm_state_machine/streamer/hist/addr_pipe/pipe_reg[0][103]/D
   -------------------------------------------------------------------    -------------------
 
                          (clock gclk rise edge)      10.000    10.000 r  
@@ -84,16 +86,16 @@ Slack (MET) :             0.463ns  (required time - arrival time)
     N15                  IBUF (Prop_ibuf_I_O)         1.370    11.370 r  clk_100mhz_IBUF_inst/O
                          net (fo=1, unplaced)         0.760    12.130    clk_100mhz_IBUF
                          BUFG (Prop_bufg_I_O)         0.091    12.221 r  clk_buffer/O
-                         net (fo=838, unplaced)       0.439    12.660    lbm_state_machine/streamer/clk_buf
-                         FDSE                                         r  lbm_state_machine/streamer/addr_out_reg[3][14]/C
+                         net (fo=1048, unplaced)      0.439    12.660    lbm_state_machine/streamer/hist/addr_pipe/clk_buf
+                         FDRE                                         r  lbm_state_machine/streamer/hist/addr_pipe/pipe_reg[0][103]/C
                          clock pessimism              0.115    12.775    
                          clock uncertainty           -0.035    12.740    
-                         FDSE (Setup_fdse_C_S)       -0.433    12.307    lbm_state_machine/streamer/addr_out_reg[3][14]
+                         FDRE (Setup_fdre_C_D)        0.062    12.802    lbm_state_machine/streamer/hist/addr_pipe/pipe_reg[0][103]
   -------------------------------------------------------------------
-                         required time                         12.307    
-                         arrival time                         -11.844    
+                         required time                         12.802    
+                         arrival time                         -12.125    
   -------------------------------------------------------------------
-                         slack                                  0.463    
+                         slack                                  0.677    
 
 
 

@@ -35,20 +35,23 @@ module streaming #(parameter HPIXELS=205, parameter VPIXELS=154)
         .addr_out(read_addr)
     );
 
-    addr_history #(HPIXELS, VPIXELS, RW_LATENCY) hist(
+    // + 1 since addr_out is registered
+    addr_history #(HPIXELS, VPIXELS, RW_LATENCY + 1) hist(
         .clk_in(clk_in),
         .hor_in(read_hor),
         .vert_in(read_vert),
         .addr_out(write_addr)
     );
 
-    pipeline #(RW_LATENCY-2, 72) data_pipe(
+    // - 1 since reading from BRAM takes two cycles
+    pipeline #(RW_LATENCY - 1, 72) data_pipe(
         .clk_in(clk_in),
         .val_in(data_in),
         .val_out(data_out)
     );
 
-    pipeline #(RW_LATENCY-1, 1) valid_pipe(
+    // - 1 since valid_data_out is registered from valid_write
+    pipeline #(RW_LATENCY - 1, 1) valid_pipe(
         .clk_in(clk_in),
         .val_in(valid_read),
         .val_out(valid_write)
@@ -76,7 +79,7 @@ module streaming #(parameter HPIXELS=205, parameter VPIXELS=154)
                 valid_read <= 0;
                 state <= start_in ? READING : WAITING;
             end else begin
-                if(principal_vert == VPIXELS && principal_hor == 1) begin
+                if(principal_vert == VPIXELS) begin
                     valid_data_out <= 0;
                     done <= 1;
                     principal_hor <= 0;

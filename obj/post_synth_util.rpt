@@ -1,8 +1,8 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
 ---------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2024.1 (lin64) Build 5076996 Wed May 22 18:36:09 MDT 2024
-| Date         : Wed Dec 11 17:24:00 2024
-| Host         : eecs-digital-16 running 64-bit Ubuntu 24.04.1 LTS
+| Date         : Wed Dec 11 18:03:43 2024
+| Host         : eecs-digital-27 running 64-bit Ubuntu 24.04.1 LTS
 | Command      : report_utilization -file obj/post_synth_util.rpt -hierarchical -hierarchical_depth 4
 | Design       : top_level
 | Device       : xc7s50csga324-1
@@ -22,7 +22,7 @@ Table of Contents
 +----------------------------------------------+------------------------------------+------------+------------+---------+------+-----+--------+--------+------------+
 |                   Instance                   |               Module               | Total LUTs | Logic LUTs | LUTRAMs | SRLs | FFs | RAMB36 | RAMB18 | DSP Blocks |
 +----------------------------------------------+------------------------------------+------------+------------+---------+------+-----+--------+--------+------------+
-| top_level                                    |                              (top) |       1145 |       1128 |       0 |   17 | 870 |     72 |      0 |          0 |
+| top_level                                    |                              (top) |       1305 |       1170 |       0 |  135 | 962 |     72 |      0 |          0 |
 |   (top_level)                                |                              (top) |          0 |          0 |       0 |    0 |   6 |      0 |      0 |          0 |
 |   blue_ser                                   |                    tmds_serializer |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
 |   genblk1[0].lattice_ram                     |                               blah |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
@@ -31,72 +31,73 @@ Table of Contents
 |       (U0)                                   |             blahblk_mem_gen_v8_4_8 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
 |       inst_blk_mem_gen                       |       blahblk_mem_gen_v8_4_8_synth |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
 |         gnbram.gnativebmg.native_blk_mem_gen |                blahblk_mem_gen_top |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
-|   genblk1[1].lattice_ram                     |                          blah_HD38 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
-|     (genblk1[1].lattice_ram)                 |                          blah_HD38 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
-|     U0                                       |        blahblk_mem_gen_v8_4_8_HD39 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
-|       (U0)                                   |        blahblk_mem_gen_v8_4_8_HD39 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
-|       inst_blk_mem_gen                       |  blahblk_mem_gen_v8_4_8_synth_HD40 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
-|         gnbram.gnativebmg.native_blk_mem_gen |           blahblk_mem_gen_top_HD41 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
-|   genblk1[2].lattice_ram                     |                          blah_HD63 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
-|     (genblk1[2].lattice_ram)                 |                          blah_HD63 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
-|     U0                                       |        blahblk_mem_gen_v8_4_8_HD64 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
-|       (U0)                                   |        blahblk_mem_gen_v8_4_8_HD64 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
-|       inst_blk_mem_gen                       |  blahblk_mem_gen_v8_4_8_synth_HD65 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
-|         gnbram.gnativebmg.native_blk_mem_gen |           blahblk_mem_gen_top_HD66 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
-|   genblk1[3].lattice_ram                     |                          blah_HD88 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
-|     (genblk1[3].lattice_ram)                 |                          blah_HD88 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
-|     U0                                       |        blahblk_mem_gen_v8_4_8_HD89 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
-|       (U0)                                   |        blahblk_mem_gen_v8_4_8_HD89 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
-|       inst_blk_mem_gen                       |  blahblk_mem_gen_v8_4_8_synth_HD90 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
-|         gnbram.gnativebmg.native_blk_mem_gen |           blahblk_mem_gen_top_HD91 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
-|   genblk1[4].lattice_ram                     |                         blah_HD113 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
-|     (genblk1[4].lattice_ram)                 |                         blah_HD113 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
-|     U0                                       |       blahblk_mem_gen_v8_4_8_HD114 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
-|       (U0)                                   |       blahblk_mem_gen_v8_4_8_HD114 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
-|       inst_blk_mem_gen                       | blahblk_mem_gen_v8_4_8_synth_HD115 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
-|         gnbram.gnativebmg.native_blk_mem_gen |          blahblk_mem_gen_top_HD116 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
-|   genblk1[5].lattice_ram                     |                         blah_HD138 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
-|     (genblk1[5].lattice_ram)                 |                         blah_HD138 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
-|     U0                                       |       blahblk_mem_gen_v8_4_8_HD139 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
-|       (U0)                                   |       blahblk_mem_gen_v8_4_8_HD139 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
-|       inst_blk_mem_gen                       | blahblk_mem_gen_v8_4_8_synth_HD140 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
-|         gnbram.gnativebmg.native_blk_mem_gen |          blahblk_mem_gen_top_HD141 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
-|   genblk1[6].lattice_ram                     |                         blah_HD163 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
-|     (genblk1[6].lattice_ram)                 |                         blah_HD163 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
-|     U0                                       |       blahblk_mem_gen_v8_4_8_HD164 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
-|       (U0)                                   |       blahblk_mem_gen_v8_4_8_HD164 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
-|       inst_blk_mem_gen                       | blahblk_mem_gen_v8_4_8_synth_HD165 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
-|         gnbram.gnativebmg.native_blk_mem_gen |          blahblk_mem_gen_top_HD166 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
-|   genblk1[7].lattice_ram                     |                         blah_HD188 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
-|     (genblk1[7].lattice_ram)                 |                         blah_HD188 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
-|     U0                                       |       blahblk_mem_gen_v8_4_8_HD189 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
-|       (U0)                                   |       blahblk_mem_gen_v8_4_8_HD189 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
-|       inst_blk_mem_gen                       | blahblk_mem_gen_v8_4_8_synth_HD190 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
-|         gnbram.gnativebmg.native_blk_mem_gen |          blahblk_mem_gen_top_HD191 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
-|   genblk1[8].lattice_ram                     |                         blah_HD213 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
-|     (genblk1[8].lattice_ram)                 |                         blah_HD213 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
-|     U0                                       |       blahblk_mem_gen_v8_4_8_HD214 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
-|       (U0)                                   |       blahblk_mem_gen_v8_4_8_HD214 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
-|       inst_blk_mem_gen                       | blahblk_mem_gen_v8_4_8_synth_HD215 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
-|         gnbram.gnativebmg.native_blk_mem_gen |          blahblk_mem_gen_top_HD216 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
+|   genblk1[1].lattice_ram                     |                          blah_HD46 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
+|     (genblk1[1].lattice_ram)                 |                          blah_HD46 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
+|     U0                                       |        blahblk_mem_gen_v8_4_8_HD47 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
+|       (U0)                                   |        blahblk_mem_gen_v8_4_8_HD47 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
+|       inst_blk_mem_gen                       |  blahblk_mem_gen_v8_4_8_synth_HD48 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
+|         gnbram.gnativebmg.native_blk_mem_gen |           blahblk_mem_gen_top_HD49 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
+|   genblk1[2].lattice_ram                     |                          blah_HD71 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
+|     (genblk1[2].lattice_ram)                 |                          blah_HD71 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
+|     U0                                       |        blahblk_mem_gen_v8_4_8_HD72 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
+|       (U0)                                   |        blahblk_mem_gen_v8_4_8_HD72 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
+|       inst_blk_mem_gen                       |  blahblk_mem_gen_v8_4_8_synth_HD73 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
+|         gnbram.gnativebmg.native_blk_mem_gen |           blahblk_mem_gen_top_HD74 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
+|   genblk1[3].lattice_ram                     |                          blah_HD96 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
+|     (genblk1[3].lattice_ram)                 |                          blah_HD96 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
+|     U0                                       |        blahblk_mem_gen_v8_4_8_HD97 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
+|       (U0)                                   |        blahblk_mem_gen_v8_4_8_HD97 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
+|       inst_blk_mem_gen                       |  blahblk_mem_gen_v8_4_8_synth_HD98 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
+|         gnbram.gnativebmg.native_blk_mem_gen |           blahblk_mem_gen_top_HD99 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
+|   genblk1[4].lattice_ram                     |                         blah_HD121 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
+|     (genblk1[4].lattice_ram)                 |                         blah_HD121 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
+|     U0                                       |       blahblk_mem_gen_v8_4_8_HD122 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
+|       (U0)                                   |       blahblk_mem_gen_v8_4_8_HD122 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
+|       inst_blk_mem_gen                       | blahblk_mem_gen_v8_4_8_synth_HD123 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
+|         gnbram.gnativebmg.native_blk_mem_gen |          blahblk_mem_gen_top_HD124 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
+|   genblk1[5].lattice_ram                     |                         blah_HD146 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
+|     (genblk1[5].lattice_ram)                 |                         blah_HD146 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
+|     U0                                       |       blahblk_mem_gen_v8_4_8_HD147 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
+|       (U0)                                   |       blahblk_mem_gen_v8_4_8_HD147 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
+|       inst_blk_mem_gen                       | blahblk_mem_gen_v8_4_8_synth_HD148 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
+|         gnbram.gnativebmg.native_blk_mem_gen |          blahblk_mem_gen_top_HD149 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
+|   genblk1[6].lattice_ram                     |                         blah_HD171 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
+|     (genblk1[6].lattice_ram)                 |                         blah_HD171 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
+|     U0                                       |       blahblk_mem_gen_v8_4_8_HD172 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
+|       (U0)                                   |       blahblk_mem_gen_v8_4_8_HD172 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
+|       inst_blk_mem_gen                       | blahblk_mem_gen_v8_4_8_synth_HD173 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
+|         gnbram.gnativebmg.native_blk_mem_gen |          blahblk_mem_gen_top_HD174 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
+|   genblk1[7].lattice_ram                     |                         blah_HD196 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
+|     (genblk1[7].lattice_ram)                 |                         blah_HD196 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
+|     U0                                       |       blahblk_mem_gen_v8_4_8_HD197 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
+|       (U0)                                   |       blahblk_mem_gen_v8_4_8_HD197 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
+|       inst_blk_mem_gen                       | blahblk_mem_gen_v8_4_8_synth_HD198 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
+|         gnbram.gnativebmg.native_blk_mem_gen |          blahblk_mem_gen_top_HD199 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
+|   genblk1[8].lattice_ram                     |                         blah_HD221 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
+|     (genblk1[8].lattice_ram)                 |                         blah_HD221 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
+|     U0                                       |       blahblk_mem_gen_v8_4_8_HD222 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
+|       (U0)                                   |       blahblk_mem_gen_v8_4_8_HD222 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
+|       inst_blk_mem_gen                       | blahblk_mem_gen_v8_4_8_synth_HD223 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
+|         gnbram.gnativebmg.native_blk_mem_gen |          blahblk_mem_gen_top_HD224 |         48 |         48 |       0 |    0 |  12 |      8 |      0 |          0 |
 |   green_ser                                  |                  tmds_serializer_0 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
-|   lbm_state_machine                          |                                lbm |        460 |        443 |       0 |   17 | 694 |      0 |      0 |          0 |
-|     (lbm_state_machine)                      |                                lbm |         37 |         37 |       0 |    0 | 165 |      0 |      0 |          0 |
-|     streamer                                 |                          streaming |        423 |        406 |       0 |   17 | 529 |      0 |      0 |          0 |
-|       (streamer)                             |                          streaming |         92 |         92 |       0 |    0 | 156 |      0 |      0 |          0 |
-|       explode                                |                   principal_to_all |         87 |         87 |       0 |    0 |   0 |      0 |      0 |          0 |
-|         genblk1[0].calc                      |                       addr_calc_11 |         41 |         41 |       0 |    0 |   0 |      0 |      0 |          0 |
-|         genblk1[3].calc                      |                       addr_calc_12 |         46 |         46 |       0 |    0 |   0 |      0 |      0 |          0 |
-|       hist                                   |                       addr_history |        243 |        226 |       0 |   17 | 371 |      0 |      0 |          0 |
-|         addr_pipe                            |                           pipeline |        106 |         89 |       0 |   17 | 371 |      0 |      0 |          0 |
-|         genblk1[1].calc                      |                          addr_calc |         45 |         45 |       0 |    0 |   0 |      0 |      0 |          0 |
+|   lbm_state_machine                          |                                lbm |        620 |        485 |       0 |  135 | 786 |      0 |      0 |          0 |
+|     (lbm_state_machine)                      |                                lbm |         32 |         32 |       0 |    0 | 229 |      0 |      0 |          0 |
+|     streamer                                 |                          streaming |        588 |        453 |       0 |  135 | 557 |      0 |      0 |          0 |
+|       (streamer)                             |                          streaming |         91 |         91 |       0 |    0 | 156 |      0 |      0 |          0 |
+|       data_pipe                              |           pipeline__parameterized0 |         63 |         63 |       0 |    0 | 144 |      0 |      0 |          0 |
+|       explode                                |                   principal_to_all |         71 |         71 |       0 |    0 |   0 |      0 |      0 |          0 |
+|         genblk1[0].calc                      |                       addr_calc_11 |         32 |         32 |       0 |    0 |   0 |      0 |      0 |          0 |
+|         genblk1[3].calc                      |                       addr_calc_12 |         39 |         39 |       0 |    0 |   0 |      0 |      0 |          0 |
+|       hist                                   |                       addr_history |        362 |        227 |       0 |  135 | 255 |      0 |      0 |          0 |
+|         addr_pipe                            |                           pipeline |        225 |         90 |       0 |  135 | 255 |      0 |      0 |          0 |
+|         genblk1[1].calc                      |                          addr_calc |         47 |         47 |       0 |    0 |   0 |      0 |      0 |          0 |
 |         genblk1[2].calc                      |                        addr_calc_4 |          7 |          7 |       0 |    0 |   0 |      0 |      0 |          0 |
-|         genblk1[3].calc                      |                        addr_calc_5 |          7 |          7 |       0 |    0 |   0 |      0 |      0 |          0 |
-|         genblk1[4].calc                      |                        addr_calc_6 |         53 |         53 |       0 |    0 |   0 |      0 |      0 |          0 |
-|         genblk1[5].calc                      |                        addr_calc_7 |          5 |          5 |       0 |    0 |   0 |      0 |      0 |          0 |
+|         genblk1[3].calc                      |                        addr_calc_5 |          6 |          6 |       0 |    0 |   0 |      0 |      0 |          0 |
+|         genblk1[4].calc                      |                        addr_calc_6 |         48 |         48 |       0 |    0 |   0 |      0 |      0 |          0 |
+|         genblk1[5].calc                      |                        addr_calc_7 |          6 |          6 |       0 |    0 |   0 |      0 |      0 |          0 |
 |         genblk1[6].calc                      |                        addr_calc_8 |          8 |          8 |       0 |    0 |   0 |      0 |      0 |          0 |
-|         genblk1[7].calc                      |                        addr_calc_9 |          6 |          6 |       0 |    0 |   0 |      0 |      0 |          0 |
-|         genblk1[8].calc                      |                       addr_calc_10 |          6 |          6 |       0 |    0 |   0 |      0 |      0 |          0 |
+|         genblk1[7].calc                      |                        addr_calc_9 |          8 |          8 |       0 |    0 |   0 |      0 |      0 |          0 |
+|         genblk1[8].calc                      |                       addr_calc_10 |          7 |          7 |       0 |    0 |   0 |      0 |      0 |          0 |
 |       valid_pipe                             |           pipeline__parameterized1 |          1 |          1 |       0 |    0 |   2 |      0 |      0 |          0 |
 |   mhdmicw                                    |                  hdmi_clk_wiz_720p |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
 |   mvg                                        |                      video_sig_gen |         70 |         70 |       0 |    0 |  21 |      0 |      0 |          0 |
