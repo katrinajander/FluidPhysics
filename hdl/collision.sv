@@ -62,13 +62,13 @@ module collision (input wire clk_in,
     logic [11:0] one_9th_rho;
 
     // extended numbers to 32 bits to use during divisions
-    logic [31:0] rho_extended;
-    logic signed [31:0] sum_x_extended;
-    logic signed [31:0] sum_y_extended;
-    logic signed [31:0] ux_extended;
-    logic signed [31:0] uy_extended;
-    logic [31:0] one_36th_rho_extended;
-    logic [31:0] one_9th_rho_extended;
+    logic [27:0] rho_extended;
+    logic signed [27:0] sum_x_extended;
+    logic signed [27:0] sum_y_extended;
+    logic signed [27:0] ux_extended;
+    logic signed [27:0] uy_extended;
+    logic [27:0] one_36th_rho_extended;
+    logic [27:0] one_9th_rho_extended;
 
     //other numbers for doing collision:
     logic signed [11:0] ux_times_3;

@@ -52,7 +52,7 @@ module divider #(parameter WIDTH = 32) (input wire clk_in,
     end
     for (int i=2; i<WIDTH; i=i+2)begin
       data_valid[i] = data_valid[i-1];
-      sign[i] <= sign[i-1]; //pipeline the sign too
+      sign[i] = sign[i-1]; //pipeline the sign too
       if ({p[i-1][WIDTH-2:0],dividend[i-1][WIDTH-1]}>=divisor[i-1][WIDTH-1:0])begin
         p[i] = {p[i-1][WIDTH-2:0],dividend[i-1][WIDTH-1]} - divisor[i-1][WIDTH-1:0];
         dividend[i] = {dividend[i-1][WIDTH-2:0],1'b1};
