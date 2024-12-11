@@ -34,7 +34,7 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
     //used to make collision step only once at a button press
     logic prev_btn;
 
-    logic [1:0] start_collide_pipe;
+    logic [2:0] start_collide_pipe;
 
     //              0        1      2         3       4         5       6        7       8
     // BRAM order: center, north, northeast, east, southeast, south, southwest, west, northwest
@@ -45,17 +45,18 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
             state <= SETUP;
             start_collide <= 0;
             start_streaming <= 0;
+            valid_data_out <= 0;
         end else begin
             prev_btn <= btn_in;
             start_collide_pipe[0] <= start_collide;
-            for (int i=1; i<2; i = i+1)begin
+            for (int i=1; i<3; i = i+1)begin
                 start_collide_pipe[i] <= start_collide_pipe[i-1];
             end
             case (state)
                 SETUP: begin 
                     //done setting up:
                     if(addr_counter == BRAM_DEPTH) begin
-                        state <= COLLISION;
+                        state <= WAITING;
                         addr_counter <= 0;
                         valid_data_out <= 0;
                     end else begin
@@ -78,9 +79,9 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
                                 end
                                 default: begin
                                     if (i == 3) begin
-                                        bram_data_out[i] <= 8'b01111111; //east! 00001010
+                                        bram_data_out[i] <= addr_counter & 8'b01111111; //east! 00001010
                                     end else begin
-                                        bram_data_out[i] <= 8'b00001111; //every other direction!
+                                        bram_data_out[i] <= addr_counter & 8'b00001111; //every other direction!
                                     end
                                     valid_data_out <= 1;
                                 end
@@ -88,40 +89,35 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
                         end
                         addr_counter <= addr_counter + 1;
                     end
+                    for(int i=0; i<9; ++i) begin
+                        addr_out[i] <= addr_counter;
+                    end
                 end
                 COLLISION: begin //do collision step
                     //done colliding
-                    collision_in_data <= bram_data_in; //send data to collide every time, but only actually use it sometimes
                     if (addr_counter == BRAM_DEPTH) begin
                         state <= STREAMING;
                         start_streaming <= 1;
                         addr_counter <= 0;
                         valid_data_out <= 0;
-                    end else if (addr_counter == 0) begin
-                        //start things
-                        //TODO but also there is a 2 cycle delay
-                        //pipeline it here
-                        start_collide <= 1; //enable starting new collision
-                        // collision_in_data <= bram_data_in; //send this data to collide
-                        addr_counter <= 1; //still want to write to 0, but also want to move on from here lol
                     end else begin
                         //ok (temporary?) plan just feed it one value at a time and wait for valid_collide then move on to next value
-                        // if there is time, switch over to pipelining it again with read/write cycles alternating
-                        start_collide <= 0;
                         if (valid_collide) begin
                             //save the results:
                             bram_data_out <= collision_out_data;
                             valid_data_out <= 1; //write enable to BRAM
                             //start new collision:
                             start_collide <= 1; //enable starting new collision
-                            // collision_in_data <= bram_data_in; //send this data to collide
+                            // read the next set of data (goes to addr_out next cycle,
+                            // arrives 2 cycles after that)
+                            // need to pipeline start_collide by 3 cycles
                             addr_counter <= addr_counter + 1;
-                            for(int i=0; i<9; ++i) begin
-                                addr_out[i] <= addr_counter;
-                            end
                         end else begin
                             start_collide <= 0; //wait until the previous collision is done
                             valid_data_out <= 0; //don't write anything to BRAM
+                        end
+                        for(int i=0; i<9; ++i) begin
+                            addr_out[i] <= addr_counter;
                         end
                     end
                 end
@@ -131,11 +127,21 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
                     bram_data_out <= streaming_out_data;
                     addr_out <= streaming_addr_out;
                     valid_data_out <= streaming_valid_out;
+                    addr_counter <= 0;
                 end
                 WAITING: begin
+                    valid_data_out <= 0;
                     if (btn_in && !prev_btn) begin //when btn is pressed and was previously unpressed
+                        /*
+                        start_collide <= 1;
+                        addr_counter <= 0;
                         state <= COLLISION;
-                    end
+                        */
+                        start_streaming <= 1;
+                        state <= STREAMING;
+
+                        addr_out <= 0;
+                    end 
                 end
             endcase
         end
@@ -144,8 +150,8 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
     //instatiate a collider
     collision collider (.clk_in(clk_in),
                         .rst_in(rst_in),
-                        .data_in(collision_in_data), //9 8-bit numbers from BRAM
-                        .data_valid_in(start_collide_pipe[1]), //high when there is real data to collide. probably once high, stays 1 for BRAM_DEPTH clock cycles
+                        .data_in(bram_data_in), //9 8-bit numbers from BRAM
+                        .data_valid_in(start_collide_pipe[2]), //high when there is real data to collide. probably once high, stays 1 for BRAM_DEPTH clock cycles
                         .data_out(collision_out_data), //9 8-bit numbers to write back to BRAM!
                         .done_colliding_out(valid_collide)); //signals that the colliding is done
 

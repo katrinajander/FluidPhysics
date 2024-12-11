@@ -17,7 +17,7 @@ module streaming #(parameter HPIXELS=205, parameter VPIXELS=154)
     localparam BRAM_SIZE = $clog2(BRAM_DEPTH);
     localparam RW_LATENCY = 3;
 
-    logic [1:0] state; // set
+    logic [1:0] state;
     logic [HOR_SIZE-1:0] principal_hor;
     logic [VERT_SIZE-1:0] principal_vert;
 
@@ -74,9 +74,9 @@ module streaming #(parameter HPIXELS=205, parameter VPIXELS=154)
                 principal_hor <= 0;
                 principal_vert <= 0;
                 valid_read <= 0;
-                state <= start_in ? WAITING : READING;
+                state <= start_in ? READING : WAITING;
             end else begin
-                if(principal_vert == VPIXELS) begin
+                if(principal_vert == VPIXELS && principal_hor == 1) begin
                     valid_data_out <= 0;
                     done <= 1;
                     principal_hor <= 0;

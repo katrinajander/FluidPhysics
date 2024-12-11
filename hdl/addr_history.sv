@@ -10,19 +10,6 @@ module addr_history #(parameter HPIXELS=205, parameter VPIXELS=154, parameter LA
     localparam BRAM_DEPTH = HPIXELS * VPIXELS;
     localparam BRAM_SIZE = $clog2(BRAM_DEPTH);
     
-    logic [LATENCY-2:0][8:0][BRAM_SIZE-1:0] addr_pipe;
-
-    always_ff @(posedge clk_in) begin
-        addr_out <= addr_pipe[LATENCY-2];
-
-        for(int i=0; i<LATENCY-2; ++i) begin
-            addr_pipe[i+1] <= addr_pipe[i];
-        end
-
-        // change from read to write address happens between addr_in and addr_pipe[0]
-        addr_pipe[0] <= addr_intermediate;
-    end
-
     logic [8:0][BRAM_SIZE-1:0] addr_intermediate;
     logic [8:0][HOR_SIZE-1:0] hor_intermediate;
     logic [8:0][VERT_SIZE-1:0] vert_intermediate;
@@ -37,6 +24,13 @@ module addr_history #(parameter HPIXELS=205, parameter VPIXELS=154, parameter LA
             );
         end
     endgenerate
+
+    pipeline #(LATENCY, BRAM_SIZE*9) addr_pipe(
+        .clk_in(clk_in),
+        .val_in(addr_intermediate),
+        .val_out(addr_out)
+    );
+
     //              0        1      2         3       4         5       6        7       8
     // BRAM order: center, north, northeast, east, southeast, south, southwest, west, northwest
     //

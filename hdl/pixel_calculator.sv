@@ -30,7 +30,7 @@ always_comb begin
     total_density = data_in[0] + data_in[1] + data_in[2] + data_in[3] + data_in[4] + data_in[5] + data_in[6] +data_in[7] + data_in[8];
     addr_out = (hcount_in >> 2) + 205 * (vcount_in >> 2);
 
-    if ((hcount_in >> 2) > 205 || (vcount_in >> 2) > 154 || (data_in[5] == 255)) begin // if it's out of the bram just make black
+    if ((hcount_in >> 2) >= 205 || (vcount_in >> 2) >= 154 || (data_in[5] == 255)) begin // if it's out of the bram just make black
         //9 * 255 = 2295
         //everything is at max (8'b1) ie. -1 so there is a barrier to draw as black
         //or out of bounds of the display

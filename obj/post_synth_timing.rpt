@@ -1,8 +1,8 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
 ---------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2024.1 (lin64) Build 5076996 Wed May 22 18:36:09 MDT 2024
-| Date         : Wed Dec 11 14:20:11 2024
-| Host         : eecs-digital-34 running 64-bit Ubuntu 24.04.1 LTS
+| Date         : Wed Dec 11 15:49:53 2024
+| Host         : eecs-digital-44 running 64-bit Ubuntu 24.04.1 LTS
 | Command      : report_timing -file obj/post_synth_timing.rpt
 | Design       : top_level
 | Device       : 7s50-csga324
@@ -12,73 +12,99 @@ Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2024 Advanc
 
 Timing Report
 
-Slack (MET) :             1.168ns  (required time - arrival time)
-  Source:                 lbm_state_machine/collider/uy_times_3_reg[3]/C
-                            (rising edge-triggered cell FDRE clocked by gclk  {rise@0.000ns fall@4.000ns period=10.000ns})
-  Destination:            lbm_state_machine/collider/data_out_reg[8]/B[5]
-                            (rising edge-triggered cell DSP48E1 clocked by gclk  {rise@0.000ns fall@4.000ns period=10.000ns})
-  Path Group:             gclk
+Slack (MET) :             1.668ns  (required time - arrival time)
+  Source:                 genblk1[1].lattice_ram/U0/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[4].ram.r/prim_noinit.ram/DEVICE_7SERIES.NO_BMM_INFO.TRUE_DP.SIMPLE_PRIM36.ram/CLKBWRCLK
+                            (rising edge-triggered cell RAMB36E1 clocked by clk_pixel_clk_wiz_0  {rise@0.000ns fall@6.734ns period=13.468ns})
+  Destination:            tmds_red/tally_reg[4]/D
+                            (rising edge-triggered cell FDRE clocked by clk_pixel_clk_wiz_0  {rise@0.000ns fall@6.734ns period=13.468ns})
+  Path Group:             clk_pixel_clk_wiz_0
   Path Type:              Setup (Max at Slow Process Corner)
-  Requirement:            10.000ns  (gclk rise@10.000ns - gclk rise@0.000ns)
-  Data Path Delay:        4.937ns  (logic 1.898ns (38.447%)  route 3.039ns (61.553%))
-  Logic Levels:           6  (CARRY4=2 LUT3=1 LUT5=1 LUT6=2)
+  Requirement:            13.468ns  (clk_pixel_clk_wiz_0 rise@13.468ns - clk_pixel_clk_wiz_0 rise@0.000ns)
+  Data Path Delay:        11.516ns  (logic 4.440ns (38.556%)  route 7.076ns (61.444%))
+  Logic Levels:           13  (CARRY4=3 LUT3=2 LUT4=2 LUT6=5 MUXF7=1)
   Clock Path Skew:        -0.145ns (DCD - SCD + CPR)
-    Destination Clock Delay (DCD):    2.660ns = ( 12.660 - 10.000 ) 
-    Source Clock Delay      (SCD):    2.920ns
+    Destination Clock Delay (DCD):    2.876ns = ( 16.344 - 13.468 ) 
+    Source Clock Delay      (SCD):    3.136ns
     Clock Pessimism Removal (CPR):    0.115ns
-  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+  Clock Uncertainty:      0.168ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
     Total System Jitter     (TSJ):    0.071ns
-    Total Input Jitter      (TIJ):    0.000ns
-    Discrete Jitter          (DJ):    0.000ns
+    Discrete Jitter          (DJ):    0.329ns
     Phase Error              (PE):    0.000ns
 
     Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
   -------------------------------------------------------------------    -------------------
-                         (clock gclk rise edge)       0.000     0.000 r  
+                         (clock clk_pixel_clk_wiz_0 rise edge)
+                                                      0.000     0.000 r  
     N15                                               0.000     0.000 r  clk_100mhz (IN)
                          net (fo=0)                   0.000     0.000    clk_100mhz
     N15                  IBUF (Prop_ibuf_I_O)         1.440     1.440 r  clk_100mhz_IBUF_inst/O
                          net (fo=1, unplaced)         0.800     2.240    clk_100mhz_IBUF
                          BUFG (Prop_bufg_I_O)         0.096     2.336 r  clk_buffer/O
-                         net (fo=2131, unplaced)      0.584     2.920    lbm_state_machine/collider/clk_buf
-                         FDRE                                         r  lbm_state_machine/collider/uy_times_3_reg[3]/C
+                         net (fo=647, unplaced)       0.584     2.920    mhdmicw/clk_ref
+                         MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -1.480     1.440 r  mhdmicw/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, unplaced)         0.800     2.240    mhdmicw/clk_pixel_clk_wiz_0
+                         BUFG (Prop_bufg_I_O)         0.096     2.336 r  mhdmicw/clkout1_buf/O
+                         net (fo=201, unplaced)       0.800     3.136    genblk1[1].lattice_ram/U0/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[4].ram.r/prim_noinit.ram/clkb
+                         RAMB36E1                                     r  genblk1[1].lattice_ram/U0/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[4].ram.r/prim_noinit.ram/DEVICE_7SERIES.NO_BMM_INFO.TRUE_DP.SIMPLE_PRIM36.ram/CLKBWRCLK
   -------------------------------------------------------------------    -------------------
-                         FDRE (Prop_fdre_C_Q)         0.456     3.376 r  lbm_state_machine/collider/uy_times_3_reg[3]/Q
-                         net (fo=25, unplaced)        0.806     4.182    lbm_state_machine/collider/uy_times_3[3]
-                         LUT3 (Prop_lut3_I0_O)        0.321     4.503 r  lbm_state_machine/collider/data_out_reg[8]_i_20/O
-                         net (fo=12, unplaced)        0.497     5.000    lbm_state_machine/collider/data_out_reg[8]_i_20_n_0
-                         LUT5 (Prop_lut5_I1_O)        0.124     5.124 r  lbm_state_machine/collider/data_out_reg[8]_i_23/O
-                         net (fo=3, unplaced)         0.467     5.591    lbm_state_machine/collider/data_out_reg[8]_i_23_n_0
-                         LUT6 (Prop_lut6_I5_O)        0.124     5.715 r  lbm_state_machine/collider/data_out_reg[8]_i_10/O
-                         net (fo=2, unplaced)         0.460     6.175    lbm_state_machine/collider/data_out_reg[8]_i_10_n_0
-                         LUT6 (Prop_lut6_I0_O)        0.124     6.299 r  lbm_state_machine/collider/data_out_reg[8]_i_14/O
-                         net (fo=1, unplaced)         0.000     6.299    lbm_state_machine/collider/data_out_reg[8]_i_14_n_0
+                         RAMB36E1 (Prop_ramb36e1_CLKBWRCLK_DOBDO[3])
+                                                      0.882     4.018 r  genblk1[1].lattice_ram/U0/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[4].ram.r/prim_noinit.ram/DEVICE_7SERIES.NO_BMM_INFO.TRUE_DP.SIMPLE_PRIM36.ram/DOBDO[3]
+                         net (fo=1, unplaced)         0.800     4.817    genblk1[1].lattice_ram/U0/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/has_mux_b.B/doutb_array[35]
+                         LUT6 (Prop_lut6_I5_O)        0.124     4.941 r  genblk1[1].lattice_ram/U0/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/has_mux_b.B/doutb[3]_INST_0_i_2/O
+                         net (fo=1, unplaced)         0.000     4.941    genblk1[1].lattice_ram/U0/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/has_mux_b.B/doutb[3]_INST_0_i_2_n_0
+                         MUXF7 (Prop_muxf7_I1_O)      0.245     5.186 r  genblk1[1].lattice_ram/U0/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/has_mux_b.B/doutb[3]_INST_0/O
+                         net (fo=2, unplaced)         0.916     6.102    pixels/red_out0__52_carry__0_0[3]
+                         LUT3 (Prop_lut3_I0_O)        0.323     6.425 r  pixels/red_out0__52_carry__0_i_4/O
+                         net (fo=2, unplaced)         0.643     7.068    pixels/red_out0__52_carry__0_i_4_n_0
+                         LUT4 (Prop_lut4_I3_O)        0.332     7.400 r  pixels/red_out0__52_carry__0_i_8/O
+                         net (fo=1, unplaced)         0.000     7.400    pixels/red_out0__52_carry__0_i_8_n_0
+                         CARRY4 (Prop_carry4_S[0]_O[2])
+                                                      0.547     7.947 r  pixels/red_out0__52_carry__0/O[2]
+                         net (fo=2, unplaced)         0.916     8.863    pixels/red_out0__52_carry__0_n_5
+                         LUT3 (Prop_lut3_I0_O)        0.330     9.193 r  pixels/red_out0__78_carry__0_i_1/O
+                         net (fo=2, unplaced)         0.500     9.693    pixels/red_out0__78_carry__0_i_1_n_0
+                         LUT4 (Prop_lut4_I3_O)        0.327    10.020 r  pixels/red_out0__78_carry__0_i_5/O
+                         net (fo=1, unplaced)         0.000    10.020    pixels/red_out0__78_carry__0_i_5_n_0
                          CARRY4 (Prop_carry4_S[3]_CO[3])
-                                                      0.401     6.700 r  lbm_state_machine/collider/data_out_reg[8]_i_2/CO[3]
-                         net (fo=1, unplaced)         0.009     6.709    lbm_state_machine/collider/data_out_reg[8]_i_2_n_0
-                         CARRY4 (Prop_carry4_CI_O[1])
-                                                      0.348     7.057 r  lbm_state_machine/collider/data_out_reg[8]_i_1/O[1]
-                         net (fo=1, unplaced)         0.800     7.857    lbm_state_machine/collider/B[5]
-                         DSP48E1                                      r  lbm_state_machine/collider/data_out_reg[8]/B[5]
+                                                      0.401    10.421 r  pixels/red_out0__78_carry__0/CO[3]
+                         net (fo=1, unplaced)         0.000    10.421    pixels/red_out0__78_carry__0_n_0
+                         CARRY4 (Prop_carry4_CI_O[2])
+                                                      0.256    10.677 f  pixels/red_out0__78_carry__1/O[2]
+                         net (fo=13, unplaced)        0.955    11.632    pixels/total_density[10]
+                         LUT6 (Prop_lut6_I3_O)        0.301    11.933 r  pixels/tally[1]_i_2/O
+                         net (fo=21, unplaced)        0.963    12.896    tmds_red/tally[4]_i_4_0
+                         LUT6 (Prop_lut6_I2_O)        0.124    13.020 r  tmds_red/tally[4]_i_18/O
+                         net (fo=1, unplaced)         0.964    13.984    pixels/tally_reg[4]_1
+                         LUT6 (Prop_lut6_I0_O)        0.124    14.108 r  pixels/tally[4]_i_6/O
+                         net (fo=1, unplaced)         0.419    14.527    pixels/tally[4]_i_6_n_0
+                         LUT6 (Prop_lut6_I3_O)        0.124    14.651 r  pixels/tally[4]_i_2/O
+                         net (fo=1, unplaced)         0.000    14.651    tmds_red/D[3]
+                         FDRE                                         r  tmds_red/tally_reg[4]/D
   -------------------------------------------------------------------    -------------------
 
-                         (clock gclk rise edge)      10.000    10.000 r  
-    N15                                               0.000    10.000 r  clk_100mhz (IN)
-                         net (fo=0)                   0.000    10.000    clk_100mhz
-    N15                  IBUF (Prop_ibuf_I_O)         1.370    11.370 r  clk_100mhz_IBUF_inst/O
-                         net (fo=1, unplaced)         0.760    12.130    clk_100mhz_IBUF
-                         BUFG (Prop_bufg_I_O)         0.091    12.221 r  clk_buffer/O
-                         net (fo=2131, unplaced)      0.439    12.660    lbm_state_machine/collider/clk_buf
-                         DSP48E1                                      r  lbm_state_machine/collider/data_out_reg[8]/CLK
-                         clock pessimism              0.115    12.775    
-                         clock uncertainty           -0.035    12.740    
-                         DSP48E1 (Setup_dsp48e1_CLK_B[5])
-                                                     -3.715     9.025    lbm_state_machine/collider/data_out_reg[8]
+                         (clock clk_pixel_clk_wiz_0 rise edge)
+                                                     13.468    13.468 r  
+    N15                                               0.000    13.468 r  clk_100mhz (IN)
+                         net (fo=0)                   0.000    13.468    clk_100mhz
+    N15                  IBUF (Prop_ibuf_I_O)         1.370    14.838 r  clk_100mhz_IBUF_inst/O
+                         net (fo=1, unplaced)         0.760    15.598    clk_100mhz_IBUF
+                         BUFG (Prop_bufg_I_O)         0.091    15.689 r  clk_buffer/O
+                         net (fo=647, unplaced)       0.439    16.128    mhdmicw/clk_ref
+                         MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -1.290    14.838 r  mhdmicw/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, unplaced)         0.760    15.598    mhdmicw/clk_pixel_clk_wiz_0
+                         BUFG (Prop_bufg_I_O)         0.091    15.689 r  mhdmicw/clkout1_buf/O
+                         net (fo=201, unplaced)       0.655    16.344    tmds_red/clk_pixel
+                         FDRE                                         r  tmds_red/tally_reg[4]/C
+                         clock pessimism              0.115    16.459    
+                         clock uncertainty           -0.168    16.291    
+                         FDRE (Setup_fdre_C_D)        0.029    16.320    tmds_red/tally_reg[4]
   -------------------------------------------------------------------
-                         required time                          9.025    
-                         arrival time                          -7.857    
+                         required time                         16.320    
+                         arrival time                         -14.651    
   -------------------------------------------------------------------
-                         slack                                  1.168    
+                         slack                                  1.668    
 
 
 
