@@ -5,7 +5,7 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
                                             input wire [8:0][7:0] bram_data_in, //data read from bram
                                             input wire [15:0] sw_in,
                                             input wire btn_in,
-                                            output logic [BRAM_SIZE-1:0] addr_out,
+                                            output logic [8:0][BRAM_SIZE-1:0] addr_out,
                                             output logic [8:0][7:0] bram_data_out,
                                             output logic valid_data_out); //data to write to bram
 
@@ -13,6 +13,7 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
     localparam SETUP = 0;
     localparam COLLISION = 1;
     localparam STREAMING = 2;
+    localparam WAITING = 3;
     logic [1:0] state;
 
     localparam BRAM_SIZE = $clog2(BRAM_DEPTH);
@@ -23,9 +24,12 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
     logic start_collide;
     logic valid_collide;
 
-    always_comb begin
-        addr_out = addr_counter - 1;
-    end
+    logic [8:0][7:0] streaming_in_data;
+    logic [8:0][7:0] streaming_out_data;
+    logic [8:0][BRAM_SIZE-1:0] streaming_addr_out;
+    logic start_streaming;
+    logic streaming_valid_out;
+    logic done_streaming;
 
     //used to make collision step only once at a button press
     logic prev_btn;
@@ -40,6 +44,7 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
             addr_counter <= 0;
             state <= SETUP;
             start_collide <= 0;
+            start_streaming <= 0;
         end else begin
             prev_btn <= btn_in;
             start_collide_pipe[0] <= start_collide;
@@ -89,7 +94,9 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
                     collision_in_data <= bram_data_in; //send data to collide every time, but only actually use it sometimes
                     if (addr_counter == BRAM_DEPTH) begin
                         state <= STREAMING;
+                        start_streaming <= 1;
                         addr_counter <= 0;
+                        valid_data_out <= 0;
                     end else if (addr_counter == 0) begin
                         //start things
                         //TODO but also there is a 2 cycle delay
@@ -109,6 +116,9 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
                             start_collide <= 1; //enable starting new collision
                             // collision_in_data <= bram_data_in; //send this data to collide
                             addr_counter <= addr_counter + 1;
+                            for(int i=0; i<9; ++i) begin
+                                addr_out[i] <= addr_counter;
+                            end
                         end else begin
                             start_collide <= 0; //wait until the previous collision is done
                             valid_data_out <= 0; //don't write anything to BRAM
@@ -116,9 +126,13 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
                     end
                 end
                 STREAMING: begin
-                    //do streaming module
-                    //if done with STREAMING:
-                    //make it step with button press? kinda nice idk
+                    start_streaming <= 0;
+                    state <= done_streaming ? WAITING : STREAMING;
+                    bram_data_out <= streaming_out_data;
+                    addr_out <= streaming_addr_out;
+                    valid_data_out <= streaming_valid_out;
+                end
+                WAITING: begin
                     if (btn_in && !prev_btn) begin //when btn is pressed and was previously unpressed
                         state <= COLLISION;
                     end
@@ -136,6 +150,16 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
                         .done_colliding_out(valid_collide)); //signals that the colliding is done
 
     //instatiate a streamer here
+    streaming streamer (
+        .clk_in(clk_in),
+        .rst_in(rst_in),
+        .start_in(start_streaming),
+        .data_in(bram_data_in),
+        .data_out(streaming_out_data),
+        .addr_out(streaming_addr_out),
+        .valid_data_out(streaming_valid_out),
+        .done(done_streaming)
+    );
 
 endmodule
 

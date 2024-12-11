@@ -25,7 +25,7 @@ module top_level
                                 // actual BRAM made with the GUI is 32768
   localparam BRAM_WIDTH = 8; // Lattice densities are 8 bits
   localparam BRAM_SIZE = $clog2(BRAM_DEPTH);
-  logic [BRAM_SIZE-1:0] addra;
+  logic [8:0][BRAM_SIZE-1:0] addra;
   logic [BRAM_SIZE-1:0] addrb;
   logic [8:0][7:0] lbm_bram_data_read;
   logic [8:0][7:0] lbm_bram_data_write;
@@ -47,7 +47,7 @@ module top_level
     for (i=0; i<9; i=i+1)begin
       //this needs to be named blah. don't change it
        blah lattice_ram (
-        .addra(addra), // LBM side addressing
+        .addra(addra[i]), // LBM side addressing
         .clka(clk_buf),
         .dina(lbm_bram_data_write[i]), // from LBM module
         .douta(lbm_bram_data_read[i]), // from LBM module

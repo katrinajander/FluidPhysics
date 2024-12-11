@@ -12,7 +12,6 @@ module pixel_calculator #(parameter BRAM_DEPTH = 31570)(input wire pixel_clk_in,
                         output logic [7:0] blue_out);
 
 localparam BRAM_SIZE = $clog2(BRAM_DEPTH);
-logic [BRAM_SIZE-1:0] addr_out;
 
 //get bram data in, set rgb stuff for that hcount and vcount
 //but there is 2 cycle delay
