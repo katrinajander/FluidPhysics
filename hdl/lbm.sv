@@ -126,7 +126,7 @@ module lbm #(parameter HPIXELS, parameter VPIXELS)
             endcase
         end
     end
-    logic [24:0] wait_counter = 0;
+    logic [20:0] wait_counter = 0;
 
     //instatiate a collider
     collision collider (.clk_in(clk_in),

@@ -59,10 +59,14 @@ module streaming #(parameter HPIXELS, parameter VPIXELS)
             assign read_addr_1[i] = principal_addr;
             assign write_addr_1[i] = principal_addr_piped;
         end
-        for(i=1;i<9;++i) begin
-            assign data_in_flipped[i] = principal_addr[(i+3)%8+1];
-        end
     endgenerate
+
+    always_comb begin
+        data_in_flipped[0] = data_in[0];
+        for(int i=1;i<9;++i) begin
+            data_in_flipped[i] = (data_in[0] == 255) ? data_in[(i+3)%8+1] : data_in[i];
+        end
+    end
 
     pipeline #(RW_LATENCY + 1, BRAM_SIZE) write_addr_1_pipe(
         .clk_in(clk_in),
