@@ -1,6 +1,7 @@
 `default_nettype none
 
-module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
+module lbm #(parameter HPIXELS, parameter VPIXELS)
+(input wire clk_in,
                                             input wire rst_in,
                                             input wire [8:0][7:0] bram_data_in, //data read from bram
                                             input wire [15:0] sw_in,
@@ -11,6 +12,7 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
                                             output logic valid_data_out); //data to write to bram
 
     // Major/minor FSM for Lattice Boltzmann Method
+  localparam BRAM_DEPTH = HPIXELS * VPIXELS;
     localparam SETUP = 0;
     localparam COLLISION = 1;
     localparam STREAMING = 2;
@@ -31,8 +33,10 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
     logic streaming_valid_out;
     logic done_streaming;
 
-    //used to make collision step only once at a button press
-    logic prev_btn;
+    logic setup_done;
+    logic start_setup;
+    logic [8:0][7:0] setup_out_data;
+    logic [8:0][BRAM_SIZE-1:0] setup_addr_out;
 
     logic [2:0] start_collide_pipe;
 
@@ -40,16 +44,15 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
     // BRAM order: center, north, northeast, east, southeast, south, southwest, west, northwest
 
     always_ff @(posedge clk_in)begin
-        if (rst_in)begin
+        if (rst_in) begin
             addr_counter <= 0;
             state <= SETUP;
+            start_setup <= 1;
             start_collide <= 0;
             start_collide_pipe <= 0;
-            prev_btn <= 1;
             start_streaming <= 0;
             valid_data_out <= 0;
         end else begin
-            prev_btn <= btn_in;
             start_collide_pipe[0] <= start_collide;
             for (int i=1; i<3; i = i+1)begin
                 start_collide_pipe[i] <= start_collide_pipe[i-1];
@@ -57,38 +60,16 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
             case (state)
                 SETUP: begin 
                     //done setting up:
-                    if(addr_counter == BRAM_DEPTH) begin
+                    if(setup_done) begin
                         state <= WAITING;
                         addr_counter <= 0;
                         valid_data_out <= 0;
                     end else begin
-                        //set up fluid flow + barriers here. should put a different barrier based on switch combinations
-                        //write to address at position # counter in the BRAM for East
-                        //TODO 2 cycle delay here too ig but if theyre all the same it doesnt matter
-                        for (int i=0; i<9; i=i+1)begin
-                            case (sw_in[1:0])
-                                2'b00: begin
-                                    bram_data_out[i] <= 8'b00001010; //100 in each direction
-                                    valid_data_out <= 1;
-                                end
-                                2'b01: begin
-                                    bram_data_out[i] <= 8'b00000000; //minimum in each direction
-                                    valid_data_out <= 1;
-                                end
-                                2'b10: begin
-                                    bram_data_out[i] <= 8'b01111111; //maximum in each direction
-                                    valid_data_out <= 1;
-                                end
-                                default: begin
-                                    bram_data_out[i] <= addr_counter & 8'b01111111; //east!
-                                    valid_data_out <= 1;
-                                end
-                            endcase
+                        for (int i=0; i<10; i=i+1) begin
+                            bram_data_out[i] <= setup_out_data[i];
                         end
-                        addr_counter <= addr_counter + 1;
-                    end
-                    for(int i=0; i<9; ++i) begin
-                        addr_out[i] <= addr_counter;
+                        addr_out <= setup_addr_out;
+                        valid_data_out <= 1;
                     end
                 end
                 COLLISION: begin //do collision step
@@ -129,21 +110,23 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
                 end
                 WAITING: begin
                     valid_data_out <= 0;
-                    if (btn_in && !prev_btn) begin //when btn is pressed and was previously unpressed
+                    if(wait_counter == 0) begin
                         /*
                         start_collide <= 1;
-                        addr_counter <= 0;
                         state <= COLLISION;
                         */
-                        start_streaming <= 1;
-                        state <= STREAMING;
 
+                       start_streaming <= 1;
+                       state <= STREAMING;
+                        addr_counter <= 0;
                         addr_out <= 0;
-                    end 
+                    end
+                    wait_counter <= wait_counter + 1;
                 end
             endcase
         end
     end
+    logic [20:0] wait_counter = 0;
 
     //instatiate a collider
     collision collider (.clk_in(clk_in),
@@ -154,7 +137,7 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
                         .done_colliding_out(valid_collide)); //signals that the colliding is done
 
     //instatiate a streamer here
-    streaming streamer (
+    streaming #(HPIXELS, VPIXELS) streamer (
         .clk_in(clk_in),
         .rst_in(rst_in),
         .start_in(start_streaming),
@@ -163,6 +146,16 @@ module lbm #(parameter BRAM_DEPTH = 31570)(input wire clk_in,
         .addr_out(streaming_addr_out),
         .valid_data_out(streaming_valid_out),
         .done(done_streaming)
+    );
+
+    setup #(HPIXELS, VPIXELS) setupper(
+        .clk_in(clk_in),
+        .rst_in(rst_in),
+        .setup_choice(sw_in[1:0]),
+        .start_in(start_setup),
+        .data_out(setup_out_data),
+        .addr_out(setup_addr_out),
+        .done(setup_done)
     );
 
 endmodule

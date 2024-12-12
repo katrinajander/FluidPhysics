@@ -1,6 +1,6 @@
 `default_nettype none
 
-module principal_to_all #(parameter HPIXELS=205, parameter VPIXELS=154)
+module principal_to_all #(parameter HPIXELS, parameter VPIXELS)
 (
     input wire [HOR_SIZE-1:0] hor_in,
     input wire [VERT_SIZE-1:0] vert_in,

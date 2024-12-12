@@ -1,5 +1,5 @@
 `default_nettype none
-module addr_history #(parameter HPIXELS=205, parameter VPIXELS=154, parameter LATENCY=3) (
+module addr_history #(parameter HPIXELS, parameter VPIXELS, parameter LATENCY=3) (
     input wire clk_in,
     input wire [8:0][HOR_SIZE-1:0] hor_in,
     input wire [8:0][VERT_SIZE-1:0] vert_in,

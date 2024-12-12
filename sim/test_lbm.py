@@ -34,8 +34,8 @@ async def test_a(dut):
     await ClockCycles(dut.clk_in, 10)  # go to waiting
     # await ClockCycles(dut.clk_in, 40000)  # setup
     dut.btn_in.value = 1
-    for i in range(80000):
-        dut.bram_data_in.value = 0x0A0A0A0A0A0A0A0A0A
+    for i in range(1000):
+        dut.bram_data_in.value = 0xFF00000000000000AA
         await ClockCycles(dut.clk_in, 1)
 
 
@@ -52,9 +52,12 @@ def lbm_runner():
     sources += [proj_path / "hdl" / "principal_to_all.sv"]
     sources += [proj_path / "hdl" / "addr_calc.sv"]
     sources += [proj_path / "hdl" / "addr_history.sv"]
+    sources += [proj_path / "hdl" / "setup.sv"]
+    sources += [proj_path / "hdl" / "line_barrier.sv"]
+    sources += [proj_path / "hdl" / "circle_barrier.sv"]
     sources += [proj_path / "hdl" / "pipeline.sv"]
     build_test_args = ["-Wall"]
-    parameters = {}  # ADD MORE HERE?
+    parameters = {"HPIXELS": 10, "VPIXELS": 10}
     sys.path.append(str(proj_path / "sim"))
     runner = get_runner(sim)
     runner.build(

@@ -1,5 +1,5 @@
 `default_nettype none
-module addr_calc #(parameter HPIXELS=205, parameter VPIXELS=154) (
+module addr_calc #(parameter HPIXELS, parameter VPIXELS) (
     input wire [HOR_SIZE-1:0] hor_in,
     input wire [VERT_SIZE-1:0] vert_in,
     output logic [BRAM_SIZE-1:0] addr_out
