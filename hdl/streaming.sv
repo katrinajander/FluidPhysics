@@ -1,12 +1,12 @@
 `default_nettype none
 
-module streaming #(parameter HPIXELS=205, parameter VPIXELS=154)
+module streaming #(parameter HPIXELS, parameter VPIXELS)
 (
     input wire clk_in,
     input wire rst_in,
     input wire start_in,
-    input wire [7:0][8:0] data_in,
-    output logic [7:0][8:0] data_out,
+    input wire [8:0][7:0] data_in,
+    output logic [8:0][7:0] data_out,
     output logic [8:0][BRAM_SIZE-1:0] addr_out,
     output logic valid_data_out,
     output logic done
@@ -21,34 +21,69 @@ module streaming #(parameter HPIXELS=205, parameter VPIXELS=154)
     logic [HOR_SIZE-1:0] principal_hor;
     logic [VERT_SIZE-1:0] principal_vert;
 
-    logic [8:0][HOR_SIZE-1:0] read_hor;
-    logic [8:0][VERT_SIZE-1:0] read_vert;
-    logic [8:0][BRAM_SIZE-1:0] read_addr, write_addr;
+    logic [8:0][HOR_SIZE-1:0] read_hor_0;
+    logic [8:0][VERT_SIZE-1:0] read_vert_0;
+    logic [8:0][BRAM_SIZE-1:0] read_addr_0, write_addr_0, read_addr_1, write_addr_1;
+
+    logic [BRAM_SIZE-1:0] principal_addr, principal_addr_piped;
+    logic [8:0][7:0] data_out_0, data_out_1;
+    logic [8:0][7:0] data_in_flipped;
 
     logic valid_read, valid_write;
 
     principal_to_all #(HPIXELS, VPIXELS) explode(
         .hor_in(principal_hor),
         .vert_in(principal_vert),
-        .hor_out(read_hor),
-        .vert_out(read_vert),
-        .addr_out(read_addr)
+        .hor_out(read_hor_0),
+        .vert_out(read_vert_0),
+        .addr_out(read_addr_0)
     );
 
     // + 1 since addr_out is registered
     addr_history #(HPIXELS, VPIXELS, RW_LATENCY + 1) hist(
         .clk_in(clk_in),
-        .hor_in(read_hor),
-        .vert_in(read_vert),
-        .addr_out(write_addr)
+        .hor_in(read_hor_0),
+        .vert_in(read_vert_0),
+        .addr_out(write_addr_0)
     );
 
+    addr_calc #(HPIXELS, VPIXELS) calc (
+        .hor_in(principal_hor),
+        .vert_in(principal_vert),
+        .addr_out(principal_addr)
+    );
+
+    generate
+        genvar i;
+        for(i=0;i<9;++i) begin
+            assign read_addr_1[i] = principal_addr;
+            assign write_addr_1[i] = principal_addr_piped;
+        end
+        for(i=1;i<9;++i) begin
+            assign data_in_flipped[i] = principal_addr[(i+3)%8+1];
+        end
+    endgenerate
+
+    pipeline #(RW_LATENCY + 1, BRAM_SIZE) write_addr_1_pipe(
+        .clk_in(clk_in),
+        .val_in(principal_addr),
+        .val_out(principal_addr_piped)
+    );
+
+
     // - 1 since reading from BRAM takes two cycles
-    pipeline #(RW_LATENCY - 1, 72) data_pipe(
+    pipeline #(RW_LATENCY - 1, 72) data_pipe_0(
         .clk_in(clk_in),
         .val_in(data_in),
-        .val_out(data_out)
+        .val_out(data_out_0)
     );
+
+    pipeline #(RW_LATENCY - 1, 72) data_pipe_1(
+        .clk_in(clk_in),
+        .val_in(data_in_flipped),
+        .val_out(data_out_1)
+    );
+    assign data_out = pass ? data_out_1 : data_out_0;
 
     // - 1 since valid_data_out is registered from valid_write
     pipeline #(RW_LATENCY - 1, 1) valid_pipe(
@@ -61,8 +96,14 @@ module streaming #(parameter HPIXELS=205, parameter VPIXELS=154)
     localparam READING = 1;
     localparam WRITING = 2;
 
+    logic pass;
+
     always_ff @(posedge clk_in) begin
-        addr_out <= valid_write ? write_addr : read_addr;
+        if(pass == 0) begin
+            addr_out <= valid_write ? write_addr_0 : read_addr_0;
+        end else begin
+            addr_out <= valid_write ? write_addr_1 : read_addr_1;
+        end
         if(rst_in) begin
             valid_data_out <= 0;
             done <= 0;
@@ -78,14 +119,21 @@ module streaming #(parameter HPIXELS=205, parameter VPIXELS=154)
                 principal_vert <= 0;
                 valid_read <= 0;
                 state <= start_in ? READING : WAITING;
+                pass <= 0;
             end else begin
                 if(principal_vert == VPIXELS) begin
                     valid_data_out <= 0;
-                    done <= 1;
                     principal_hor <= 0;
                     valid_read <= 0;
                     principal_vert <= 0;
-                    state <= WAITING;
+                    if(pass == 0) begin
+                        pass <= 1;
+                        state <= READING;
+                    end else begin
+                        done <= 1;
+                        pass <= 0;
+                        state <= WAITING;
+                    end
                 end else begin
                     done <= 0;
                     if(state == READING) begin

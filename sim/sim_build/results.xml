@@ -1,6 +1,6 @@
 <testsuites name="results">
   <testsuite name="all" package="all">
-    <property name="random_seed" value="1733954683" />
-    <testcase name="test_a" classname="test_lbm" file="/home/gispisquared/Documents/MIT/Fall2024/6.2050/project/FluidPhysics/sim/test_lbm.py" lineno="22" time="34.63151001930237" sim_time_ns="800290.001" ratio_time="23108.723834275403" />
+    <property name="random_seed" value="1733963505" />
+    <testcase name="test_a" classname="test_setup" file="/home/gispisquared/Documents/MIT/Fall2024/6.2050/project/FluidPhysics/sim/test_setup.py" lineno="22" time="0.23498845100402832" sim_time_ns="10190.001" ratio_time="43363.837484189025" />
   </testsuite>
 </testsuites>

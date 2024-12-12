@@ -1,20 +1,18 @@
 `default_nettype none
 
-module line_barrier #(parameter VERT_START = 80, parameter VERT_END = 120,
-                    parameter HOR_START = 100, parameter HOR_END = 104)
-                    (input wire clk_in,
-                    input wire rst_in,
-                    input wire [15:0] addr_in,
-                    output logic bram_data_out);
-
-//make a rectangle of barrier at the specific area
-//and fill the rest with fluid moving right
-//figure out what to do based on the input address
-
-always_comb begin
-
-end
-
+module line_barrier 
+#(
+    parameter HPIXELS, parameter VPIXELS,
+    parameter VERT_START = 80, parameter VERT_END = 120,
+    parameter HOR_START = 100, parameter HOR_END = 104
+) (
+    input wire [HOR_SIZE-1:0] hor_in,
+    input wire [VERT_SIZE-1:0] vert_in,
+    output wire in_barrier
+);
+localparam HOR_SIZE = $clog2(HPIXELS);
+localparam VERT_SIZE = $clog2(VPIXELS);
+assign in_barrier = (hor_in >= HOR_START) && (hor_in < HOR_END) && (vert_in >= VERT_START) && (vert_in < VERT_END);
 endmodule
 
 `default_nettype wire
